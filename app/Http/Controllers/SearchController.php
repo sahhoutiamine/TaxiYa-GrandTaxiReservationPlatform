@@ -34,7 +34,7 @@ class SearchController extends Controller
                         ->with(['departureCity', 'arrivalCity']) 
                         ->get();
 
-            return view('search_results', compact('result'));
+            return view('home', compact('result'));
         }
 
 }
