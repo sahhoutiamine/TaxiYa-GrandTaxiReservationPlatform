@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-  
+    public function index(){
+        $cities = City::all();
+        return view('home', compact('cities'));
+    }
+
         public function searche(Request $R){
             $DepartCity = $R->departcity;
             $ArivaleCity = $R->arivalecity;
