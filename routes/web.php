@@ -2,6 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', ['App\Http\Controllers\SearchController', 'index'])->name('home');
 
+Route::get('/', [SearchController::class, 'index'])->name('home');
 Route::post('/search', [SearchController::class, 'searche'])->name('search');

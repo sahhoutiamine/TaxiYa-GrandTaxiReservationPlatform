@@ -74,39 +74,27 @@
 <!-- Search Bar -->
 <section class="bg-white border-b shadow-sm sticky top-16 z-40">
     <div class="max-w-7xl mx-auto px-6 py-4">
-        <form class="flex gap-4">
+        <form class="flex gap-4" action="#" method="post">
             <div class="flex-1">
                 <select name="from"
                         class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none bg-white">
-                    <option value="Casablanca" selected>Casablanca</option>
-                    <option value="Rabat">Rabat</option>
-                    <option value="Marrakech">Marrakech</option>
-                    <option value="Fes">Fes</option>
-                    <option value="Tangier">Tangier</option>
-                    <option value="Agadir">Agadir</option>
-                    <option value="Meknes">Meknes</option>
-                    <option value="Oujda">Oujda</option>
-                    <option value="Kenitra">Kenitra</option>
-                    <option value="Tetouan">Tetouan</option>
+                    <option value="" disabled selected>Select departure city</option>
+                    @foreach($cities as $city)
+                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="flex-1">
                 <select name="to"
                         class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none bg-white">
-                    <option value="Casablanca">Casablanca</option>
-                    <option value="Rabat">Rabat</option>
-                    <option value="Marrakech" selected>Marrakech</option>
-                    <option value="Fes">Fes</option>
-                    <option value="Tangier">Tangier</option>
-                    <option value="Agadir">Agadir</option>
-                    <option value="Meknes">Meknes</option>
-                    <option value="Oujda">Oujda</option>
-                    <option value="Kenitra">Kenitra</option>
-                    <option value="Tetouan">Tetouan</option>
+                    <option value="" disabled selected>Select departure city</option>
+                    @foreach($cities as $city)
+                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="flex-1">
-                <input type="date" value="2026-02-15"
+                <input type="date" name="date" value="2026-02-15"
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none">
             </div>
             <button type="submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all">

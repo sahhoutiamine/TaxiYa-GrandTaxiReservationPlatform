@@ -142,7 +142,7 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">From</label>
                             <select name="from" required
                                     class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900 bg-white">
-                                <option value="" disabled>Select departure city</option>
+                                <option value="" disabled selected>Select departure city</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}">{{ $city->name }}</option>
                                 @endforeach
@@ -153,7 +153,7 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">To</label>
                             <select name="to" required
                                     class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900 bg-white">
-                                <option value="" disabled>Select departure city</option>
+                                <option value="" disabled selected>Select departure city</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}">{{ $city->name }}</option>
                                 @endforeach
