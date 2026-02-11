@@ -12,4 +12,8 @@ class SearchController extends Controller
         $cities = City::all();
         return view('home', compact('cities'));
     }
+    public function search(){
+        $cities = City::all();
+        return view('traveler.search', compact('cities'));
+    }
 }
