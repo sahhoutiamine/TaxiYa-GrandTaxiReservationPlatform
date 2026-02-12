@@ -123,10 +123,7 @@
                             <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Departure Date & Time</label>
                             <input type="datetime-local" name="departure_date" id="inputDate" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
                         </div>
-                        <div class="space-y-2 max-w-md mt-4">
-                            <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Available Seats</label>
-                            <input type="number" name="available_seats" id="inputSeats" min="1" max="8" value="4" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
-                        </div>
+                        <input type="hidden" name="available_seats" id="inputSeats" value="6">
                     </div>
 
                     <hr class="border-gray-50">
@@ -234,7 +231,7 @@
         const time = dateTime ? new Date(dateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
         
         const price = parseInt(priceInput.value) || 0;
-        const seats = parseInt(seatsInput.value) || 0;
+        const seats = 6;
 
         // Update UI
         document.getElementById('previewFrom').textContent = fromName;

@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -227,30 +229,40 @@
             <h3 class="text-2xl font-black"><span id="ticket-from">---</span> <br> <span class="text-blue-300 text-lg font-normal">to</span> <span id="ticket-to">---</span></h3>
         </div>
         <div class="p-6 relative">
-            <div class="text-center mb-6">
-                <div class="text-sm text-gray-500 mb-1">Departure</div>
-                <div class="text-xl font-bold text-dark" id="ticket-date">---</div>
+            <div id="ticket-content">
+                <div class="text-center mb-6">
+                    <div class="text-sm text-gray-500 mb-1">Departure</div>
+                    <div class="text-xl font-bold text-dark" id="ticket-date">---</div>
+                </div>
+                <div class="flex justify-between border-b-2 border-dashed border-gray-100 pb-6 mb-6">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">SEAT</div>
+                        <div class="text-2xl font-black text-primary" id="ticket-seat">---</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">DRIVER</div>
+                        <div class="text-sm font-bold text-dark" id="ticket-driver">---</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">PRICE</div>
+                        <div class="text-xl font-bold text-dark" id="ticket-price">---</div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="bg-white p-2 border-2 border-dark rounded-xl mb-3">
+                        <img id="ticket-qr" src="" alt="QR Code" class="w-32 h-32">
+                    </div>
+                    <p class="text-xs text-center text-gray-400">Show this code to the driver to board</p>
+                    <div class="mt-2 font-mono text-sm font-bold text-dark tracking-widest" id="ticket-id">---</div>
+                </div>
             </div>
-            <div class="flex justify-between border-b-2 border-dashed border-gray-100 pb-6 mb-6">
-                <div class="text-center">
-                    <div class="text-xs text-gray-500">SEAT</div>
-                    <div class="text-2xl font-black text-primary" id="ticket-seat">---</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-xs text-gray-500">DRIVER</div>
-                    <div class="text-sm font-bold text-dark" id="ticket-driver">---</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-xs text-gray-500">PRICE</div>
-                    <div class="text-xl font-bold text-dark" id="ticket-price">---</div>
-                </div>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="bg-white p-2 border-2 border-dark rounded-xl mb-3">
-                    <img id="ticket-qr" src="" alt="QR Code" class="w-32 h-32">
-                </div>
-                <p class="text-xs text-center text-gray-400">Show this code to the driver to board</p>
-                <div class="mt-2 font-mono text-sm font-bold text-dark tracking-widest" id="ticket-id">---</div>
+            <div class="mt-8">
+                <button onclick="downloadTicketPDF()" class="w-full py-4 bg-accent text-white font-bold rounded-2xl shadow-lg shadow-accent/30 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download PDF Ticket
+                </button>
             </div>
         </div>
     </div>
@@ -346,6 +358,31 @@
     }
     function closeTicketModal() {
         document.getElementById('ticketModal').classList.add('hidden');
+    }
+
+    function downloadTicketPDF() {
+        const element = document.getElementById('ticketModal').querySelector('.bg-white');
+        const options = {
+            margin: 0,
+            filename: `TaxiYa-Ticket-${document.getElementById('ticket-id').textContent}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Clone element to avoid modifying the UI during PDF generation
+        const clone = element.cloneNode(true);
+        // Remove the download button from the clone
+        clone.querySelector('button[onclick="downloadTicketPDF()"]').remove();
+        // Remove the close button
+        clone.querySelector('button[onclick="closeTicketModal()"]').remove();
+        
+        // Temporarily style the clone for PDF
+        clone.style.width = '400px';
+        clone.style.borderRadius = '0';
+        clone.style.margin = '0 auto';
+
+        html2pdf().from(clone).set(options).save();
     }
 
     // Rating Modal Logic
