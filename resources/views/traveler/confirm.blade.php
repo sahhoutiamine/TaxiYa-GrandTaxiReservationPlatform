@@ -18,14 +18,16 @@
     </script>
 </head>
 <body class="bg-gray-50 font-body">
+
 <nav class="bg-white shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="search.html" class="flex items-center gap-2 text-gray-600 hover:text-primary">
+        <a href="#" class="flex items-center gap-2 text-gray-600 hover:text-primary">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back to Search
         </a>
         <div class="text-xl font-display font-black text-dark">Checkout</div>
-        <div class="w-20"></div> </div>
+        <div class="w-20"></div>
+    </div>
 </nav>
 
 <div class="max-w-6xl mx-auto px-6 py-10">
@@ -47,41 +49,74 @@
                 </div>
 
                 <div class="bg-gray-100 rounded-xl p-8 max-w-md mx-auto relative">
+
                     <div class="mb-6 flex justify-between px-4">
-                        <div class="w-1/3"></div> <div class="w-1/3">
+                        <div class="w-1/3"></div>
+                        <div class="w-1/3">
                             <div class="bg-gray-300 h-16 rounded-lg flex items-center justify-center text-gray-500 text-xs font-bold mb-1">DRIVER</div>
                         </div>
                         <div class="w-1/3 pl-2">
-                            <button onclick="selectSeat(1, 120)" id="seat-1" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group">
-                                <span class="font-bold text-dark">1</span>
-                                <span class="text-[10px] text-accent font-medium group-hover:text-primary">120 MAD</span>
+                            @php $isTaken = in_array(1, $takenSeats ?? []); @endphp
+                            <button id="seat-1"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat(1, 120)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">1</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">120 MAD</span>@endif
                             </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">2</span>
+                        @php $isTaken = in_array(2, $takenSeats ?? []); @endphp
+                        <button id="seat-2"
+                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                @else onclick="selectSeat(2, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                            @endif>
+                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">2</span>
+                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
                         </button>
-                        <button onclick="selectSeat(3, 100)" id="seat-3" class="seat-btn h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm">
-                            <span class="font-bold text-dark">3</span>
-                            <span class="text-[10px] text-accent font-medium">100 MAD</span>
+
+                        @php $isTaken = in_array(3, $takenSeats ?? []); @endphp
+                        <button id="seat-3"
+                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                @else onclick="selectSeat(3, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                            @endif>
+                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">3</span>
+                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
                         </button>
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">4</span>
+
+                        @php $isTaken = in_array(4, $takenSeats ?? []); @endphp
+                        <button id="seat-4"
+                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                @else onclick="selectSeat(4, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                            @endif>
+                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">4</span>
+                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
                         </button>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="selectSeat(5, 100)" id="seat-5" class="seat-btn h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm">
-                            <span class="font-bold text-dark">5</span>
-                            <span class="text-[10px] text-accent font-medium">100 MAD</span>
+                        @php $isTaken = in_array(5, $takenSeats ?? []); @endphp
+                        <button id="seat-5"
+                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                @else onclick="selectSeat(5, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                            @endif>
+                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">5</span>
+                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
                         </button>
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">6</span>
+
+                        @php $isTaken = in_array(6, $takenSeats ?? []); @endphp
+                        <button id="seat-6"
+                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                @else onclick="selectSeat(6, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                            @endif>
+                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">6</span>
+                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
                         </button>
-                        <div class="h-16 opacity-0"></div>
-                    </div>
+
+                        <div class="h-16 opacity-0"></div> </div>
+
                 </div>
             </div>
 
@@ -171,26 +206,38 @@
     let currentPrice = 0;
 
     function selectSeat(seatNum, price) {
-        // Reset visual state of all buttons
-        document.querySelectorAll('.seat-btn').forEach(btn => {
+        // 1. Reset visual state of all buttons (except disabled ones)
+        // We select only buttons that are NOT disabled
+        document.querySelectorAll('.seat-btn:not([disabled])').forEach(btn => {
+            // Restore default white styling
             btn.className = 'seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group';
-            // Reset text colors inside
-            btn.querySelector('span:first-child').className = 'font-bold text-dark';
-            btn.querySelector('span:last-child').className = 'text-[10px] text-accent font-medium';
+
+            // Reset inner text colors
+            const spans = btn.getElementsByTagName('span');
+            if(spans.length >= 2) {
+                spans[0].className = 'font-bold text-dark';
+                spans[1].className = 'text-[10px] text-accent font-medium group-hover:text-primary';
+            }
         });
 
-        // Set active state
+        // 2. Set active state for the clicked button
         const activeBtn = document.getElementById(`seat-${seatNum}`);
-        activeBtn.className = 'seat-btn w-full h-16 bg-primary border-2 border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-lg ring-2 ring-primary/30';
-        activeBtn.querySelector('span:first-child').className = 'font-bold text-white';
-        activeBtn.querySelector('span:last-child').className = 'text-[10px] text-white/80 font-medium';
+        if(activeBtn) {
+            activeBtn.className = 'seat-btn w-full h-16 bg-primary border-2 border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-lg ring-2 ring-primary/30';
 
-        // Update Summary
+            const spans = activeBtn.getElementsByTagName('span');
+            if(spans.length >= 2) {
+                spans[0].className = 'font-bold text-white';
+                spans[1].className = 'text-[10px] text-white/80 font-medium';
+            }
+        }
+
+        // 3. Update Summary Panel
         document.getElementById('summary-seat').innerText = `#${seatNum}`;
         document.getElementById('summary-price').innerText = `${price} MAD`;
         currentPrice = price;
 
-        // Enable Button
+        // 4. Enable Confirm Button
         const btn = document.getElementById('confirm-btn');
         btn.disabled = false;
         btn.className = 'w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:-translate-y-1';
