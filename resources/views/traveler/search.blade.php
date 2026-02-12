@@ -76,7 +76,7 @@
                 </select>
             </div>
             <div class="flex-1">
-                <input type="date" value="2026-02-15"
+                <input type="date" value="" name ="date"
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
             </div>
             <button type="submit"
@@ -154,7 +154,7 @@
                         </div>
                         <div class="text-center">
                             <div class="text-xs text-gray-600 mb-1">Duration</div>
-                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hourariv  - $hour , $minute) }} H</div>
+                            <div class="font-bold text-dark">{{$hourariv-$hour}} H</div>
                         </div>
                         <div class="text-center border-l border-gray-200">
                             <div class="text-xs text-gray-600 mb-1">Distance</div>
