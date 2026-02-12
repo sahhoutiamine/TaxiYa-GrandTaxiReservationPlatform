@@ -18,19 +18,48 @@
     </script>
 </head>
 <body class="bg-gray-50 font-body">
+
 <nav class="bg-white shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="search.html" class="flex items-center gap-2 text-gray-600 hover:text-primary">
+        <a href="{{ url()->previous() }}" class="flex items-center gap-2 text-gray-600 hover:text-primary">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back to Search
         </a>
         <div class="text-xl font-display font-black text-dark">Checkout</div>
-        <div class="w-20"></div> </div>
+        <div class="w-20"></div>
+    </div>
 </nav>
 
 <div class="max-w-6xl mx-auto px-6 py-10">
-    <div class="grid lg:grid-cols-3 gap-10">
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">There were errors with your submission</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
+    @if(session('error'))
+        <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <div class="grid lg:grid-cols-3 gap-10">
         <div class="lg:col-span-2 space-y-8">
 
             <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
@@ -47,39 +76,60 @@
                 </div>
 
                 <div class="bg-gray-100 rounded-xl p-8 max-w-md mx-auto relative">
+                    {{-- Row 1: Driver & Seat 1 (Premium Seat) --}}
                     <div class="mb-6 flex justify-between px-4">
-                        <div class="w-1/3"></div> <div class="w-1/3">
+                        <div class="w-1/3"></div>
+                        <div class="w-1/3">
                             <div class="bg-gray-300 h-16 rounded-lg flex items-center justify-center text-gray-500 text-xs font-bold mb-1">DRIVER</div>
                         </div>
                         <div class="w-1/3 pl-2">
-                            <button onclick="selectSeat(1, 120)" id="seat-1" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group">
-                                <span class="font-bold text-dark">1</span>
-                                <span class="text-[10px] text-accent font-medium group-hover:text-primary">120 MAD</span>
+                            @php
+                                $seatNum = 1;
+                                $price = $trip->price_per_seat * 1.20;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button type="button" id="seat-{{ $seatNum }}"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
                             </button>
                         </div>
                     </div>
 
+                    {{-- Row 2: Seats 2, 3, 4 --}}
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">2</span>
-                        </button>
-                        <button onclick="selectSeat(3, 100)" id="seat-3" class="seat-btn h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm">
-                            <span class="font-bold text-dark">3</span>
-                            <span class="text-[10px] text-accent font-medium">100 MAD</span>
-                        </button>
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">4</span>
-                        </button>
+                        @foreach([2, 3, 4] as $seatNum)
+                            @php
+                                $price = $trip->price_per_seat;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button type="button" id="seat-{{ $seatNum }}"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
+                            </button>
+                        @endforeach
                     </div>
 
+                    {{-- Row 3: Seats 5, 6 --}}
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="selectSeat(5, 100)" id="seat-5" class="seat-btn h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm">
-                            <span class="font-bold text-dark">5</span>
-                            <span class="text-[10px] text-accent font-medium">100 MAD</span>
-                        </button>
-                        <button disabled class="h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60">
-                            <span class="font-bold text-gray-500">6</span>
-                        </button>
+                        @foreach([5, 6] as $seatNum)
+                            @php
+                                $price = $trip->price_per_seat;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button type="button" id="seat-{{ $seatNum }}"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
+                            </button>
+                        @endforeach
                         <div class="h-16 opacity-0"></div>
                     </div>
                 </div>
@@ -91,10 +141,13 @@
                     Payment Details
                 </h2>
 
-                <form onsubmit="event.preventDefault(); alert('Booking Confirmed!');" class="space-y-4">
+                <form id="payment-form" action="{{ route('payment.process', $trip->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="seat_number" id="selected-seat-input" required>
+
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Cardholder Name</label>
-                        <input type="text" placeholder="e.g. Mohamed Alami" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
+                        <input type="text" name="cardholder_name" required placeholder="e.g. Mohamed Alami" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Card Number</label>
@@ -126,23 +179,23 @@
                     <div class="absolute -left-[9px] bottom-0 w-4 h-4 rounded-full bg-secondary"></div>
 
                     <div class="mb-6">
-                        <p class="text-xs text-gray-500">08:00 AM</p>
-                        <p class="font-bold text-dark">Casablanca</p>
+                        <p class="text-xs text-gray-500">{{ $departureDate->format('h:i A') }}</p>
+                        <p class="font-bold text-dark">{{ $trip->departureCity->name }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500">11:30 AM</p>
-                        <p class="font-bold text-dark">Marrakech</p>
+                        <p class="text-xs text-gray-500">{{ $arrivalDate->format('h:i A') }} <span class="text-[10px]">(Est.)</span></p>
+                        <p class="font-bold text-dark">{{ $trip->arrivalCity->name }}</p>
                     </div>
                 </div>
 
                 <div class="py-4 border-t border-b border-gray-100 space-y-3 mb-6">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Date</span>
-                        <span class="font-medium text-dark">Feb 15, 2026</span>
+                        <span class="font-medium text-dark">{{ $departureDate->format('M d, Y') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Total Distance</span>
-                        <span class="font-medium text-dark">240 km</span>
+                        <span class="font-medium text-dark">{{ $distance }} km</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Seat Selected</span>
@@ -155,7 +208,7 @@
                     <span id="summary-price" class="text-2xl font-black text-primary">0 MAD</span>
                 </div>
 
-                <button id="confirm-btn" onclick="alert('Payment Successful! Ticket sent.')" disabled class="w-full py-4 bg-gray-300 text-gray-500 font-bold rounded-xl transition-all shadow-none">
+                <button id="confirm-btn" type="submit" form="payment-form" disabled class="w-full py-4 bg-gray-300 text-gray-500 font-bold rounded-xl transition-all shadow-none">
                     Confirm Payment
                 </button>
 
@@ -168,29 +221,36 @@
 </div>
 
 <script>
-    let currentPrice = 0;
-
     function selectSeat(seatNum, price) {
-        // Reset visual state of all buttons
-        document.querySelectorAll('.seat-btn').forEach(btn => {
+        // 1. Reset visual state
+        document.querySelectorAll('.seat-btn:not([disabled])').forEach(btn => {
             btn.className = 'seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group';
-            // Reset text colors inside
-            btn.querySelector('span:first-child').className = 'font-bold text-dark';
-            btn.querySelector('span:last-child').className = 'text-[10px] text-accent font-medium';
+            const spans = btn.getElementsByTagName('span');
+            if(spans.length >= 2) {
+                spans[0].className = 'font-bold text-dark';
+                spans[1].className = 'text-[10px] text-accent font-medium group-hover:text-primary';
+            }
         });
 
-        // Set active state
+        // 2. Set active state
         const activeBtn = document.getElementById(`seat-${seatNum}`);
-        activeBtn.className = 'seat-btn w-full h-16 bg-primary border-2 border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-lg ring-2 ring-primary/30';
-        activeBtn.querySelector('span:first-child').className = 'font-bold text-white';
-        activeBtn.querySelector('span:last-child').className = 'text-[10px] text-white/80 font-medium';
+        if(activeBtn) {
+            activeBtn.className = 'seat-btn w-full h-16 bg-primary border-2 border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-lg ring-2 ring-primary/30';
+            const spans = activeBtn.getElementsByTagName('span');
+            if(spans.length >= 2) {
+                spans[0].className = 'font-bold text-white';
+                spans[1].className = 'text-[10px] text-white/80 font-medium';
+            }
+        }
 
-        // Update Summary
+        // 3. Update Summary Panel
         document.getElementById('summary-seat').innerText = `#${seatNum}`;
-        document.getElementById('summary-price').innerText = `${price} MAD`;
-        currentPrice = price;
+        document.getElementById('summary-price').innerText = `${Math.round(price)} MAD`;
 
-        // Enable Button
+        // 4. Update Hidden Input for Form Submission
+        document.getElementById('selected-seat-input').value = seatNum;
+
+        // 5. Enable Confirm Button
         const btn = document.getElementById('confirm-btn');
         btn.disabled = false;
         btn.className = 'w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:-translate-y-1';

@@ -33,18 +33,7 @@ class SearchController extends Controller
                         ->with(['cheffeur.taxis', 'departureCity', 'arrivalCity']) 
                         ->get();
 
-            foreach ($result as $trip) {
-                $lat1 = $trip->departureCity->x;
-                $lon1 = $trip->departureCity->y;
-                $lat2 = $trip->arrivalCity->x;
-                $lon2 = $trip->arrivalCity->y;
-
-            
-                $trip->distance = $this->mapobj->calculateDistance($lat1, $lon1, $lat2, $lon2);
-            }
-
             return view('traveler.search', compact('result', 'cities'));
-
         }
 
 }

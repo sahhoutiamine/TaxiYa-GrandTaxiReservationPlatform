@@ -15,6 +15,7 @@ class Reservation extends Model
         'seat',
         'status',
         'total_price',
+        'rate',
     ];
 
     public function trip()
