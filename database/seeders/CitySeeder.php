@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class CitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
     $cities = [
