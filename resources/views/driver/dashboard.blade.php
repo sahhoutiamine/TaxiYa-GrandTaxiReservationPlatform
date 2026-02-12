@@ -59,6 +59,12 @@
                     <a href="{{ route('rides.create') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Create Ride</a>
                     <a href="#" class="text-gray-700 hover:text-primary font-medium transition-colors">Earnings</a>
                     <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                                Logout
+                            </button>
+                        </form>
                         <div class="text-right">
                             <div class="text-xs text-gray-500">Driver</div>
                             <div class="font-semibold">{{ $driver->name }}</div>
@@ -66,15 +72,6 @@
                         <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">
                             {{ strtoupper(substr($driver->name, 0, 1)) }}
                         </div>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all text-sm flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                Logout
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>

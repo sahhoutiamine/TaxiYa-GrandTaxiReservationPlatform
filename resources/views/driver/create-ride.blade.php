@@ -50,6 +50,12 @@
                 <a href="{{ route('driver.dashboard') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Dashboard</a>
                 <a href="#" class="text-primary font-bold border-b-2 border-primary">Create Ride</a>
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                            Logout
+                        </button>
+                    </form>
                     <div class="text-right">
                         <div class="text-xs text-gray-500">Driver</div>
                         <div class="font-semibold">{{ auth()->user()->name }}</div>
