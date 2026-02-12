@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     // Driver Ride Management
     Route::get('/driver/rides/create', [RideController::class, 'create'])->name('rides.create');
     Route::post('/driver/rides', [RideController::class, 'store'])->name('rides.store');
+
+    Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });
 
 

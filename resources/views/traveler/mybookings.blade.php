@@ -9,6 +9,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -201,9 +203,20 @@
                     </div>
                     @if($reservation->status == 'confirmed')
                     <div class="flex gap-3">
-                        <button onclick="openRateModal('{{ $reservation->trip->cheffeur->name }}', {{ $reservation->id }})" class="px-4 py-2 border border-primary text-primary font-medium rounded-lg hover:bg-primary hover:text-white transition-all">
-                            Rate Driver
-                        </button>
+                        @if($reservation->rate)
+                            <div class="flex items-center gap-1">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <svg class="w-5 h-5 {{ $i <= $reservation->rate ? 'text-secondary fill-current' : 'text-gray-300' }}" viewBox="0 0 20 20">
+                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                @endfor
+                                <span class="ml-2 text-sm font-bold text-gray-400">Your Rating</span>
+                            </div>
+                        @else
+                            <button onclick="openRateModal('{{ $reservation->trip->cheffeur->name }}', {{ $reservation->id }})" class="px-4 py-2 border border-primary text-primary font-medium rounded-lg hover:bg-primary hover:text-white transition-all">
+                                Rate Driver
+                            </button>
+                        @endif
                     </div>
                     @else
                     <div>
@@ -310,8 +323,6 @@
             </button>
         </div>
 
-        <textarea placeholder="Write a comment (optional)..." class="w-full p-3 border border-gray-200 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-primary outline-none resize-none" rows="3"></textarea>
-
         <div class="flex gap-3">
             <button onclick="closeRateModal()" class="flex-1 py-3 border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50">Cancel</button>
             <button onclick="submitRating()" class="flex-1 py-3 bg-secondary text-dark font-bold rounded-xl hover:bg-yellow-400 shadow-lg shadow-yellow-200">Submit</button>
@@ -391,15 +402,18 @@
 
     // Rating Modal Logic
     let currentRating = 0;
+    let activeReservationId = null;
 
-    function openRateModal(driverName) {
+    function openRateModal(driverName, reservationId) {
         document.getElementById('driverName').textContent = driverName;
+        activeReservationId = reservationId;
         document.getElementById('rateModal').classList.remove('hidden');
         rate(0); // Reset stars
     }
 
     function closeRateModal() {
         document.getElementById('rateModal').classList.add('hidden');
+        activeReservationId = null;
     }
 
     function rate(stars) {
@@ -421,11 +435,48 @@
 
     function submitRating() {
         if (currentRating === 0) {
-            alert('Please select a star rating');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Rating Required',
+                text: 'Please select a star rating before submitting.',
+                confirmButtonColor: '#1E40AF'
+            });
             return;
         }
-        alert(`Thank you! You rated the trip ${currentRating} stars.`);
-        closeRateModal();
+
+        fetch(`/reservations/${activeReservationId}/rate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                rate: currentRating
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Rated!',
+                text: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            }).then(() => {
+                window.location.reload();
+            });
+            closeRateModal();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#1E40AF'
+            });
+        });
     }
 
     // Close modals on outside click

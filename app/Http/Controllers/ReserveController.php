@@ -97,4 +97,20 @@ class ReserveController extends Controller
         // 6. Redirect to Ticket
         return redirect()->route('mybookings');
     }
+    public function rate(Request $request, $id)
+    {
+        $request->validate([
+            'rate' => 'required|integer|between:1,5',
+        ]);
+
+        $reservation = Reservation::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $reservation->update([
+            'rate' => $request->rate
+        ]);
+
+        return response()->json(['message' => 'Thank you for your rating!']);
+    }
 }
