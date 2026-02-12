@@ -47,6 +47,14 @@
             color: #374151; /* gray-700 */
         }
     </style>
+    <script>
+        // Force reload if page is loaded from cache (back button)
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    </script>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 <nav class="bg-white shadow-sm">

@@ -34,6 +34,14 @@
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
     </style>
+    <script>
+        // Force reload if page is loaded from cache (back button)
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    </script>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 <nav class="bg-white shadow-sm">
