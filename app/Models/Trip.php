@@ -19,9 +19,12 @@ class Trip extends Model
         'available_seats',
     ];
 
-    protected $casts = [
-        'departure_date' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'departure_date' => 'datetime',
+        ];
+    }
 
     public function cheffeur()
     {

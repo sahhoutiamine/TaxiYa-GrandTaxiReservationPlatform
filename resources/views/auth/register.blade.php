@@ -1,57 +1,3 @@
-<<<<<<< HEAD
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
-
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,15 +52,15 @@
 <nav class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-center py-4">
-            <a href="../index.html" class="flex items-center gap-3">
+            <a href="/" class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-secondary to-yellow-300 rounded-xl flex items-center justify-center transform rotate-45">
                     <svg class="w-6 h-6 text-white -rotate-45" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
+                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
                     </svg>
                 </div>
                 <span class="text-2xl font-display font-black text-dark">TaxiYa</span>
             </a>
-            <a href="../index.html" class="text-sm font-semibold text-gray-500 hover:text-primary">Back to Home</a>
+            <a href="/" class="text-sm font-semibold text-gray-500 hover:text-primary">Back to Home</a>
         </div>
     </div>
 </nav>
@@ -127,27 +73,34 @@
         </div>
 
         <div class="flex p-1 bg-gray-100 rounded-xl mb-8">
-            <button type="button" onclick="setRole('traveler')" id="btn-traveler" class="role-btn active flex-1 py-2 rounded-lg text-sm font-bold transition-all">
+            <button type="button" onclick="setRole('voyageur')" id="btn-traveler" class="role-btn active flex-1 py-2 rounded-lg text-sm font-bold transition-all">
                 Traveler
             </button>
-            <button type="button" onclick="setRole('driver')" id="btn-driver" class="role-btn inactive flex-1 py-2 rounded-lg text-sm font-bold transition-all">
+            <button type="button" onclick="setRole('cheffeur')" id="btn-driver" class="role-btn inactive flex-1 py-2 rounded-lg text-sm font-bold transition-all">
                 Driver
             </button>
         </div>
 
-        <form action="../traveler/search.html" method="GET" class="space-y-4" id="registerForm">
-            <input type="hidden" name="role" id="roleInput" value="traveler">
+        <form method="POST" action="{{ route('register') }}" class="space-y-4" id="registerForm">
+            @csrf
+            <input type="hidden" name="role" id="roleInput" value="voyageur">
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">First Name</label>
-                    <input type="text" placeholder="Mohamed" required
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                    <input type="text" name="first_name" value="{{ old('first_name') }}" placeholder="Mohamed" required autofocus
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('first_name') border-red-500 @enderror">
+                    @error('first_name')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
-                    <input type="text" placeholder="Amine" required
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                    <input type="text" name="last_name" value="{{ old('last_name') }}" placeholder="Amine" required
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('last_name') border-red-500 @enderror">
+                    @error('last_name')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -155,35 +108,49 @@
                 <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
                 <div class="relative">
                     <span class="absolute left-4 top-3.5 text-gray-500 font-semibold">+212</span>
-                    <input type="tel" placeholder="6 00 00 00 00" required
-                           class="w-full pl-16 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                    <input type="tel" name="phone" value="{{ old('phone') }}" placeholder="6 00 00 00 00" required
+                           class="w-full pl-16 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('phone') border-red-500 @enderror">
                 </div>
+                @error('phone')
+                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                <input type="email" placeholder="you@example.com" required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                <input type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('email') border-red-500 @enderror">
+                @error('email')
+                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div id="driverFields" class="hidden space-y-4 pt-2 border-t border-gray-100 mt-2">
+            <div id="driverFields" class="{{ old('role') === 'cheffeur' ? '' : 'hidden' }} space-y-4 pt-2 border-t border-gray-100 mt-2">
                 <p class="text-sm font-semibold text-primary">Vehicle Information</p>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Vehicle Model</label>
-                    <input type="text" placeholder="e.g., Mercedes 240, Dacia Lodgy" id="vehicleInput"
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">License Plate</label>
-                    <input type="text" placeholder="12345 - A - 6" id="plateInput"
-                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">License Number</label>
+                    <input type="text" name="license_number" value="{{ old('license_number') }}" placeholder="12345 - A - 6" id="plateInput"
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('license_number') border-red-500 @enderror">
+                    @error('license_number')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
-                <input type="password" placeholder="Create a strong password" required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required autocomplete="new-password"
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('password') border-red-500 @enderror">
+                    @error('password')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" name="password_confirmation" placeholder="••••••••" required autocomplete="new-password"
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                </div>
             </div>
 
             <div class="flex items-start gap-3 pt-2">
@@ -192,14 +159,14 @@
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-blue-700 transform hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/30 text-lg mt-4">
-                Create Traveler Account
+                {{ old('role') === 'cheffeur' ? 'Register & Start Driving' : 'Create Traveler Account' }}
             </button>
         </form>
 
         <div class="mt-8 text-center">
             <p class="text-gray-600">
                 Already have an account?
-                <a href="login.html" class="font-bold text-primary hover:text-blue-700">Log In</a>
+                <a href="{{ route('login') }}" class="font-bold text-primary hover:text-blue-700">Log In</a>
             </p>
         </div>
     </div>
@@ -207,12 +174,10 @@
 
 <script>
     function setRole(role) {
-        const form = document.getElementById('registerForm');
         const roleInput = document.getElementById('roleInput');
         const driverFields = document.getElementById('driverFields');
         const submitBtn = document.getElementById('submitBtn');
         const headerText = document.getElementById('headerText');
-        const vehicleInput = document.getElementById('vehicleInput');
         const plateInput = document.getElementById('plateInput');
 
         // Buttons
@@ -221,7 +186,7 @@
 
         roleInput.value = role;
 
-        if (role === 'driver') {
+        if (role === 'cheffeur') {
             // UI Updates for Driver
             btnDriver.classList.add('active');
             btnDriver.classList.remove('inactive');
@@ -230,13 +195,11 @@
 
             // Show Fields
             driverFields.classList.remove('hidden');
-            vehicleInput.required = true;
             plateInput.required = true;
 
             // Text Updates
             submitBtn.textContent = 'Register & Start Driving';
             headerText.textContent = 'Start earning money with your taxi today';
-            form.action = '../driver/dashboard.html'; // Redirect to driver dashboard
         } else {
             // UI Updates for Traveler
             btnTraveler.classList.add('active');
@@ -246,16 +209,19 @@
 
             // Hide Fields
             driverFields.classList.add('hidden');
-            vehicleInput.required = false;
             plateInput.required = false;
 
             // Text Updates
             submitBtn.textContent = 'Create Traveler Account';
             headerText.textContent = 'Join 8 million Moroccans traveling smarter';
-            form.action = '../traveler/search.html'; // Redirect to search
         }
     }
+    
+    // Initialize on page load if there's an old role
+    window.addEventListener('DOMContentLoaded', () => {
+        const oldRole = "{{ old('role', 'voyageur') }}";
+        setRole(oldRole);
+    });
 </script>
 </body>
 </html>
->>>>>>> b7621ebeafd9651a3c8d1c887903d5da2398c87e

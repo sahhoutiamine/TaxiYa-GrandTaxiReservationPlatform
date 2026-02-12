@@ -148,7 +148,8 @@
             <!-- Search Card -->
             <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
                 <h3 class="text-2xl font-bold text-dark mb-6">Find Your Ride</h3>
-                <form action="traveler/search.blade.php" method="GET">
+                <form action="{{ route('search') }}" method="POST">
+                    @csrf
                     <div class="space-y-4 mb-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">From</label>
@@ -156,7 +157,7 @@
                                     class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900 bg-white">
                                 <option value="" disabled selected>Select departure city</option>
                                 @foreach($cities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                    <option value="{{ $city->id }}" {{ (isset($result) && request('from') == $city->id) ? 'selected' : '' }}>{{ $city->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -165,16 +166,16 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">To</label>
                             <select name="to" required
                                     class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900 bg-white">
-                                <option value="" disabled selected>Select departure city</option>
+                                <option value="" disabled selected>Select arrival city</option>
                                 @foreach($cities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                    <option value="{{ $city->id }}" {{ (isset($result) && request('to') == $city->id) ? 'selected' : '' }}>{{ $city->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
-                            <input type="date" name="date" required
+                            <input type="date" name="date" value="{{ request('date') }}" required
                                    class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900">
                         </div>
                     </div>
@@ -196,6 +197,73 @@
         </div>
     </div>
 </section>
+
+@isset($result)
+<section class="py-20 bg-gray-50 scroll-mt-20" id="results">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div>
+                <h2 class="text-4xl font-black text-dark mb-4">Available Rides</h2>
+                <p class="text-xl text-gray-600">Found {{ $result->count() }} grand taxis for your journey</p>
+            </div>
+        </div>
+
+        @if($result->isEmpty())
+            <div class="bg-white rounded-3xl p-12 text-center shadow-sm border-2 border-dashed border-gray-200">
+                <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-dark mb-2">No rides found</h3>
+                <p class="text-gray-500 mb-8">Try adjusting your date or cities to find more options.</p>
+            </div>
+        @else
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($result as $trip)
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all group">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <div class="text-sm font-bold text-primary uppercase tracking-wider mb-1">{{ $trip->departureCity->name }} → {{ $trip->arrivalCity->name }}</div>
+                                    <div class="text-2xl font-black text-dark">{{ \Carbon\Carbon::parse($trip->departure_date)->format('H:i') }}</div>
+                                </div>
+                                <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-bold">
+                                    {{ $trip->available_seats }} seats left
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-center gap-3 text-gray-600">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span class="font-medium">{{ \Carbon\Carbon::parse($trip->departure_date)->format('M d, Y') }}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-gray-600">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span class="font-bold text-dark text-lg">{{ number_format($trip->price_per_seat, 2) }} MAD</span>
+                                </div>
+                            </div>
+
+                            <a href="#" class="block w-full text-center bg-dark text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-all">
+                                Book a Seat
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</section>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+@endisset
 
 <!-- How It Works -->
 <section class="py-20 bg-white" id="how-it-works">

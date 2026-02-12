@@ -1,52 +1,3 @@
-<<<<<<< HEAD
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +39,7 @@
 <nav class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-center py-4">
-            <a href="../index.html" class="flex items-center gap-3">
+            <a href="/" class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-secondary to-yellow-300 rounded-xl flex items-center justify-center transform rotate-45">
                     <svg class="w-6 h-6 text-white -rotate-45" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
@@ -96,7 +47,7 @@
                 </div>
                 <span class="text-2xl font-display font-black text-dark">TaxiYa</span>
             </a>
-            <a href="../index.html" class="text-sm font-semibold text-gray-500 hover:text-primary">Back to Home</a>
+            <a href="/" class="text-sm font-semibold text-gray-500 hover:text-primary">Back to Home</a>
         </div>
     </div>
 </nav>
@@ -108,20 +59,43 @@
             <p class="text-gray-500">Sign in to book your grand taxi seat</p>
         </div>
 
-        <form action="../traveler/search.html" method="GET" class="space-y-6">
+        <!-- Session Status -->
+        @if (session('status'))
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            @csrf
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                <input type="email" placeholder="you@example.com" required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                <input type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required autofocus autocomplete="username"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('email') border-red-500 @enderror">
+                @error('email')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <label class="block text-sm font-bold text-gray-700">Password</label>
-                    <a href="#" class="text-sm font-semibold text-primary hover:text-blue-700">Forgot Password?</a>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-sm font-semibold text-primary hover:text-blue-700">Forgot Password?</a>
+                    @endif
                 </div>
-                <input type="password" placeholder="••••••••" required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all @error('password') border-red-500 @enderror">
+                @error('password')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="block">
+                <label for="remember_me" class="inline-flex items-center">
+                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-primary shadow-sm focus:ring-primary" name="remember">
+                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                </label>
             </div>
 
             <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-blue-700 transform hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/30 text-lg">
@@ -132,7 +106,7 @@
         <div class="mt-8 text-center">
             <p class="text-gray-600">
                 Don't have an account?
-                <a href="register.html" class="font-bold text-primary hover:text-blue-700">Sign Up</a>
+                <a href="{{ route('register') }}" class="font-bold text-primary hover:text-blue-700">Sign Up</a>
             </p>
         </div>
 
@@ -143,4 +117,3 @@
 </div>
 </body>
 </html>
->>>>>>> b7621ebeafd9651a3c8d1c887903d5da2398c87e

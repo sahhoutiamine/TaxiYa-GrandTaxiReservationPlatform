@@ -14,27 +14,18 @@ class SearchController extends Controller
         return view('home', compact('cities'));
     }
 
-        public function searche(Request $R){
-            $DepartCity = $R->departcity;
-            $ArivaleCity = $R->arivalecity;
+        public function search(Request $R){
+            $DepartCityId = $R->from;
+            $ArrivalCityId = $R->to;
 
-      
-            $departureCity = City::where('name', $DepartCity)->first();
-            $arrivalCity   = City::where('name', $ArivaleCity)->first();
-
-            if (!$departureCity || !$arrivalCity) {
-                return redirect()->back()->with('error', 'City not found');
-            }
-
-            $departureCityId = $departureCity->id;
-            $arrivalCityId   = $arrivalCity->id;
-
-            $result = Trip::where('departure_city_id', $departureCityId)
-                        ->where('arrival_city_id', $arrivalCityId)
+            $cities = City::all();
+            
+            $result = Trip::where('departure_city_id', $DepartCityId)
+                        ->where('arrival_city_id', $ArrivalCityId)
                         ->with(['departureCity', 'arrivalCity']) 
                         ->get();
 
-            return view('home', compact('result'));
+            return view('home', compact('result', 'cities'));
         }
 
 }
