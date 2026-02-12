@@ -25,7 +25,7 @@ class SearchController extends Controller
                         ->with(['departureCity', 'arrivalCity']) 
                         ->get();
 
-            return view('home', compact('result', 'cities'));
+            return view('traveler.search', compact('result', 'cities'));
         }
 
 }

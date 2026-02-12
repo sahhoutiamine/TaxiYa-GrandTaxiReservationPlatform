@@ -61,7 +61,7 @@
                     <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                         <div class="text-right">
                             <div class="text-xs text-gray-500">Driver</div>
-                            <div class="font-semibold">Mohamed El Fassi</div>
+                            <div class="font-semibold">{{ $driver->name }}</div>
                         </div>
                         <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">
                             M
@@ -84,7 +84,7 @@
                             <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
                         </svg>
                     </div>
-                    <div class="text-4xl font-black">3</div>
+                    <div class="text-4xl font-black">{{ $todaysRidesCount }}</div>
                 </div>
 
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
@@ -94,7 +94,7 @@
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                         </svg>
                     </div>
-                    <div class="text-4xl font-black">12/18</div>
+                    <div class="text-4xl font-black">{{ $confirmedSeatsCount }}/{{ $totalSeatsCapacity }}</div>
                 </div>
 
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
@@ -105,7 +105,7 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"/>
                         </svg>
                     </div>
-                    <div class="text-4xl font-black">1,200 MAD</div>
+                    <div class="text-4xl font-black">{{ number_format($todaysEarnings, 2) }} MAD</div>
                 </div>
 
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
@@ -115,7 +115,7 @@
                             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                         </svg>
                     </div>
-                    <div class="text-4xl font-black">4.8<span class="text-xl text-blue-200">/5</span></div>
+                    <div class="text-4xl font-black">{{ $formattedRating }}<span class="text-xl text-blue-200">/5</span></div>
                 </div>
             </div>
         </div>
@@ -137,10 +137,15 @@
             <!-- Ride Cards -->
             <div class="space-y-6">
                 <!-- Active Ride -->
-                <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-primary">
+            @forelse($trips as $trip)
+                <div class="bg-white rounded-2xl p-6 shadow-lg {{ $trip->departure_date->isToday() ? 'border-2 border-primary' : '' }}">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full">ACTIVE TODAY</span>
-                        <span class="text-sm text-gray-500">Ride #12345</span>
+                        @if($trip->departure_date->isToday())
+                            <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full">ACTIVE TODAY</span>
+                        @else
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">UPCOMING</span>
+                        @endif
+                        <span class="text-sm text-gray-500">Ride #{{ $trip->id }}</span>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-6">
@@ -148,23 +153,23 @@
                             <div class="flex justify-between mb-4">
                                 <div>
                                     <div class="text-sm text-gray-600 mb-1">From</div>
-                                    <div class="text-xl font-bold text-dark">Casablanca</div>
-                                    <div class="text-sm text-gray-600">08:00 AM</div>
+                                    <div class="text-xl font-bold text-dark">{{ $trip->departureCity->name }}</div>
+                                    <div class="text-sm text-gray-600">{{ $trip->departure_date->format('g:i A') }}</div>
                                 </div>
                                 <svg class="w-8 h-8 text-primary self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                                 </svg>
                                 <div class="text-right">
                                     <div class="text-sm text-gray-600 mb-1">To</div>
-                                    <div class="text-xl font-bold text-dark">Marrakech</div>
-                                    <div class="text-sm text-gray-600">11:30 AM</div>
+                                    <div class="text-xl font-bold text-dark">{{ $trip->arrivalCity->name }}</div>
+                                    <div class="text-sm text-gray-600">{{ $trip->departure_date->addHours(2)->format('g:i A') }}</div>
                                 </div>
                             </div>
 
                             <div class="flex items-center gap-4 text-sm text-gray-600">
-                                <span>📅 Feb 15, 2026</span>
-                                <span>⏱️ 3h 30m</span>
-                                <span class="font-semibold text-primary">100 MAD/seat</span>
+                                <span>📅 {{ $trip->departure_date->format('M d, Y') }}</span>
+                                <span>⏱️ 2h 00m</span>
+                                <span class="font-semibold text-primary">{{ number_format($trip->price_per_seat, 0) }} MAD/seat</span>
                             </div>
                         </div>
 
@@ -172,10 +177,10 @@
                             <div class="mb-3">
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="font-semibold text-dark">Seats Booked</span>
-                                    <span class="text-primary font-bold">3 of 6</span>
+                                    <span class="text-primary font-bold">{{ $trip->reservations->count() }} of 6</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-3">
-                                    <div class="bg-primary h-3 rounded-full" style="width: 50%"></div>
+                                    <div class="bg-primary h-3 rounded-full" style="width: {{ ($trip->reservations->count() / 6) * 100 }}%"></div>
                                 </div>
                             </div>
 
@@ -184,21 +189,17 @@
                                 <div class="aspect-square bg-gray-300 rounded flex items-center justify-center text-xs font-bold text-gray-500" title="Driver">
                                     D
                                 </div>
-                                <div class="aspect-square bg-accent rounded flex items-center justify-center text-xs font-bold text-white" title="Booked">
-                                    1
-                                </div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400" title="Available">
-                                    2
-                                </div>
-                                <div class="aspect-square bg-accent rounded flex items-center justify-center text-xs font-bold text-white" title="Booked">
-                                    3
-                                </div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400" title="Available">
-                                    4
-                                </div>
-                                <div class="aspect-square bg-accent rounded flex items-center justify-center text-xs font-bold text-white" title="Booked">
-                                    5
-                                </div>
+                                @php
+                                    $reservedSeats = $trip->reservations->pluck('seat')->toArray();
+                                @endphp
+                                @for($i = 1; $i <= 6; $i++)
+                                    @php
+                                        $isBooked = in_array($i, $reservedSeats);
+                                    @endphp
+                                    <div class="aspect-square {{ $isBooked ? 'bg-accent text-white' : 'bg-gray-200 text-gray-400' }} rounded flex items-center justify-center text-xs font-bold" title="{{ $isBooked ? 'Booked' : 'Available' }}">
+                                        {{ $i }}
+                                    </div>
+                                @endfor
                             </div>
 
                             <div class="flex gap-2">
@@ -212,70 +213,24 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Upcoming Ride -->
-                <div class="bg-white rounded-2xl p-6 shadow-lg">
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">UPCOMING</span>
-                        <span class="text-sm text-gray-500">Ride #12346</span>
+            @empty
+                <div class="bg-white rounded-2xl p-12 shadow-lg text-center flex flex-col items-center justify-center">
+                    <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
                     </div>
-
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <div class="flex justify-between mb-4">
-                                <div>
-                                    <div class="text-sm text-gray-600 mb-1">From</div>
-                                    <div class="text-xl font-bold text-dark">Marrakech</div>
-                                    <div class="text-sm text-gray-600">03:00 PM</div>
-                                </div>
-                                <svg class="w-8 h-8 text-primary self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                </svg>
-                                <div class="text-right">
-                                    <div class="text-sm text-gray-600 mb-1">To</div>
-                                    <div class="text-xl font-bold text-dark">Casablanca</div>
-                                    <div class="text-sm text-gray-600">06:30 PM</div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-4 text-sm text-gray-600">
-                                <span>📅 Feb 15, 2026</span>
-                                <span>⏱️ 3h 30m</span>
-                                <span class="font-semibold text-primary">100 MAD/seat</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="mb-3">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="font-semibold text-dark">Seats Booked</span>
-                                    <span class="text-primary font-bold">1 of 6</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-3">
-                                    <div class="bg-blue-500 h-3 rounded-full" style="width: 16.67%"></div>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-6 gap-2 mb-4">
-                                <div class="aspect-square bg-gray-300 rounded flex items-center justify-center text-xs font-bold text-gray-500">D</div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400">1</div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400">2</div>
-                                <div class="aspect-square bg-accent rounded flex items-center justify-center text-xs font-bold text-white">3</div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400">4</div>
-                                <div class="aspect-square bg-gray-200 rounded flex items-center justify-center text-xs font-bold text-gray-400">5</div>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <button class="flex-1 px-4 py-2 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-all text-sm">
-                                    View Details
-                                </button>
-                                <button onclick="if(confirm('Cancel this ride?')) alert('Ride cancelled')" class="px-4 py-2 border-2 border-red-300 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition-all text-sm">
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <h3 class="text-2xl font-black text-dark mb-3">No Active Trips Found</h3>
+                    <p class="text-gray-500 max-w-md mb-8">You haven't scheduled any upcoming trips yet. Start by creating a new ride to begin accepting passengers.</p>
+                    
+                    <a href="create-ride.html" class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-primary/30 flex items-center gap-2 transform hover:-translate-y-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Create Your First Ride
+                    </a>
                 </div>
+            @endforelse
             </div>
         </div>
     </section>
