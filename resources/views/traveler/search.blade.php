@@ -33,7 +33,7 @@
 <nav class="bg-white shadow-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-center py-4">
-            <a href="../index.html" class="flex items-center gap-3">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <div
                     class="w-12 h-12 bg-gradient-to-br from-secondary to-yellow-300 rounded-xl flex items-center justify-center transform rotate-45">
                     <svg class="w-7 h-7 text-white -rotate-45" fill="currentColor" viewBox="0 0 24 24">
@@ -44,8 +44,8 @@
                 <span class="text-3xl font-display font-black text-dark">TaxiYa</span>
             </a>
             <div class="flex items-center gap-6">
-                <a href="search.html" class="text-primary font-semibold">Search</a>
-                <a href="#" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
+                <a href="{{ route('dashboard') }}" class="text-primary font-semibold">Search</a>
+                <a href="{{ route('mybookings') }}" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
                 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">A
                 </div>
             </div>
@@ -171,7 +171,7 @@
                         <div class="text-sm text-gray-600">
                             <span class="font-bold text-accent">{{$trip->available_seats}} seats left</span>
                         </div>
-                        <a href="payment.html"
+                        <a href="{{ route('payment', $trip->id) }}"
                            class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg">
                             Book Ride
                         </a>

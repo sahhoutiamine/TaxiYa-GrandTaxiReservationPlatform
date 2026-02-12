@@ -46,7 +46,7 @@
 <nav class="bg-white shadow-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-center py-4">
-            <a href="../index.html" class="flex items-center gap-3">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-gradient-to-br from-secondary to-yellow-300 rounded-xl flex items-center justify-center transform rotate-45">
                     <svg class="w-7 h-7 text-white -rotate-45" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
@@ -56,8 +56,8 @@
             </a>
 
             <div class="flex items-center gap-6">
-                <a href="search.html" class="text-gray-700 hover:text-primary font-medium transition-colors">Search</a>
-                <a href="bookings.html" class="text-primary font-bold">My Bookings</a>
+                <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Search</a>
+                <a href="{{ route('mybookings') }}" class="text-primary font-bold">My Bookings</a>
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                     <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
                         A
