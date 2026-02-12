@@ -30,6 +30,7 @@ class Trip extends Model
     {
         return $this->belongsTo(User::class, 'cheffeur_id');
     }
+  
 
     public function departureCity()
     {
@@ -40,6 +41,7 @@ class Trip extends Model
     {
         return $this->belongsTo(City::class, 'arrival_city_id');
     }
+
 
     public function reservations()
     {

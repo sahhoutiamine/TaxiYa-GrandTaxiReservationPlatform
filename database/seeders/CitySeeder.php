@@ -12,22 +12,22 @@ class CitySeeder extends Seeder
      */
     public function run(): void
     {
-        $cities = [
-            ['name' => 'Casablanca', 'x' => 10, 'y' => 4],
-            ['name' => 'Rabat', 'x' => 11, 'y' => 3],
-            ['name' => 'Marrakech', 'x' => 10, 'y' => 6],
-            ['name' => 'Tangier', 'x' => 12, 'y' => 1],
-            ['name' => 'Agadir', 'x' => 8, 'y' => 7],
-            ['name' => 'Fes', 'x' => 13, 'y' => 3],
-            ['name' => 'Oujda', 'x' => 16, 'y' => 2],
-            ['name' => 'Essaouira', 'x' => 8, 'y' => 6],
-            ['name' => 'Safi', 'x' => 9, 'y' => 5],
-            ['name' => 'Beni Mellal', 'x' => 12, 'y' => 5],
-            ['name' => 'Nador', 'x' => 15, 'y' => 2],
-            ['name' => 'Layoune', 'x' => 5, 'y' => 10],
-            ['name' => 'Dakhla', 'x' => 2, 'y' => 15],
-        ];
+    $cities = [
+    ['name' => 'Casablanca', 'lat' => 33.58831, 'lng' => -7.61138],  
+    ['name' => 'Rabat', 'lat' => 34.01325, 'lng' => -6.83255],       
+    ['name' => 'Marrakech', 'lat' => 31.63416, 'lng' => -7.99994],
+    ['name' => 'Tangier', 'lat' => 35.76727, 'lng' => -5.79975],
+    ['name' => 'Agadir', 'lat' => 30.42018, 'lng' => -9.59815],
+    ['name' => 'Fes', 'lat' => 34.03313, 'lng' => -5.00028],
+    ['name' => 'Oujda', 'lat' => 34.686667, 'lng' => -1.911389],
+    ['name' => 'Essaouira', 'lat' => 31.5100, 'lng' => -9.7700],
+    ['name' => 'Safi', 'lat' => 32.29939, 'lng' => -9.23718],
+    ['name' => 'Beni Mellal', 'lat' => 32.33725, 'lng' => -6.34983],
+    ['name' => 'Nador', 'lat' => 35.16813, 'lng' => -2.93352],       
+    ['name' => 'Laayoune', 'lat' => 27.1212, 'lng' => -13.2034],      
+    ['name' => 'Dakhla', 'lat' => 30.41145, 'lng' => -9.55344],      
+];
 
         DB::table('cities')->upsert($cities, ['name'], ['x', 'y']);
     }
-}
+}//

@@ -57,10 +57,11 @@ class User extends Authenticatable
     // Relationships
 
     // Chauffeur has taxis
-    public function taxis()
-    {
-        return $this->hasMany(Taxi::class);
-    }
+public function Taxis()
+{
+    return $this->hasOne(Taxi::class);
+}
+
 
     // Chauffeur has created trips
     public function driverTrips()

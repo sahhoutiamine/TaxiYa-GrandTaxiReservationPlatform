@@ -55,7 +55,8 @@
 
 <section class="bg-white border-b shadow-sm sticky top-16 z-40">
     <div class="max-w-7xl mx-auto px-6 py-4">
-        <form class="flex flex-col md:flex-row gap-4">
+       <form action="{{ route('search') }}" method="POST" class="flex flex-col md:flex-row gap-4">
+         @csrf
             <div class="flex-1">
                 <select name="from" required
                         class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900 bg-white">
@@ -102,54 +103,73 @@
                 </div>
             </div>
 
-            <div class="md:col-span-3 space-y-6">
-                <div class="mb-2">
-                    <h2 class="text-2xl font-black text-dark">Available Rides</h2>
-                    <p class="text-gray-600">Casablanca to Marrakech • 240 km</p>
+            <!-- Results List -->
+            <div class="md:col-span-3">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-dark mb-2">Available Rides</h2>
+                    <p class="text-gray-600">12 rides found from Casablanca to Marrakech on Feb 15, 2026</p>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full">Available</span>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-yellow-400">★</span> <span class="text-sm font-bold">4.8</span>
+
+
+
+                @foreach($result as $trip)
+                <div class="space-y-6">
+                    <!-- Ride Card 1 -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-primary">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full">Verified Driver</span>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                        </svg>
+                                        <span class="text-sm font-semibold">{{rand(1,4)}}.{{rand(1,9)}} </span>
+                                    </div>
                                 </div>
+                                <h3 class="font-bold text-lg text-dark">{{ $trip->cheffeur->name}}</h3>
+                                <p class="text-sm text-gray-600">{{$trip->cheffeur->taxis->model}} - ABC 12345</p>
                             </div>
-                            <h3 class="font-bold text-lg text-dark">Mohamed El Fassi</h3>
-                            <p class="text-sm text-gray-600">White Mercedes - ABC 12345</p>
+                            <div class="text-right">
+                                <div class="text-3xl font-black text-primary">{{ $trip->price_per_seat}} MAD</div>
+                                <div class="text-sm text-gray-600">per seat</div>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-3xl font-black text-primary">100 MAD</div>
-                            <div class="text-sm text-gray-600">per seat</div>
-                        </div>
-                    </div>
 
                     <div class="grid grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-xl">
                         <div>
                             <div class="text-xs text-gray-600 mb-1">Departure</div>
-                            <div class="font-bold text-dark">08:00 AM</div>
-                            <div class="text-xs text-gray-500">Casablanca</div>
+                            @php
+                                $hour = rand(6, 22);
+                                $hourariv =$hour + rand(1,10);
+                                $minute = rand(0, 59);
+
+
+                            @endphp
+
+
+                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hour, $minute) }} AM</div>
+                            <div class="text-xs text-gray-500">{{ $trip->departureCity->name}}</div>
                         </div>
                         <div class="text-center">
                             <div class="text-xs text-gray-600 mb-1">Duration</div>
-                            <div class="font-bold text-dark">3h 30m</div>
+                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hourariv  - $hour , $minute) }} H</div>
                         </div>
                         <div class="text-center border-l border-gray-200">
                             <div class="text-xs text-gray-600 mb-1">Distance</div>
-                            <div class="font-bold text-dark">240 km</div>
+                            <div class="font-bold text-dark">{{$trip->distance}} km</div>
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-600 mb-1">Arrival</div>
-                            <div class="font-bold text-dark">11:30 AM</div>
-                            <div class="text-xs text-gray-500">Marrakech</div>
+                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hourariv , $minute) }} AM</div>
+                            <div class="text-xs text-gray-500">{{ $trip->arrivalCity->name}}</div>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between">
                         <div class="text-sm text-gray-600">
-                            <span class="font-bold text-accent">3 seats left</span>
+                            <span class="font-bold text-accent">{{$trip->available_seats}} seats left</span>
                         </div>
                         <a href="payment.html"
                            class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg">
@@ -157,47 +177,15 @@
                         </a>
                     </div>
                 </div>
+@endforeach
 
-                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 opacity-75">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">Full / Sold Out</span>
-                            </div>
-                            <h3 class="font-bold text-lg text-gray-600">Youssef Tazi</h3>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-3xl font-black text-gray-400">100 MAD</div>
-                        </div>
-                    </div>
 
-                    <div class="grid grid-cols-4 gap-4 mb-6 p-4 bg-white rounded-xl border border-gray-100">
-                        <div>
-                            <div class="text-xs text-gray-500">Departure</div>
-                            <div class="font-bold text-gray-600">09:00 AM</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xs text-gray-500">Duration</div>
-                            <div class="font-bold text-gray-600">3h 30m</div>
-                        </div>
-                        <div class="text-center border-l border-gray-200">
-                            <div class="text-xs text-gray-500">Distance</div>
-                            <div class="font-bold text-gray-600">240 km</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs text-gray-500">Arrival</div>
-                            <div class="font-bold text-gray-600">12:30 PM</div>
-                        </div>
-                    </div>
 
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-red-500 font-medium">No seats available</div>
-                        <button disabled
-                                class="px-8 py-3 bg-gray-300 text-gray-500 font-bold rounded-lg cursor-not-allowed">
-                            Fully Booked
-                        </button>
-                    </div>
-                </div>
+
+
+
+
+
 
             </div>
         </div>
