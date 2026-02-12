@@ -5,34 +5,54 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\City;
 use App\Models\Trip;
+use Illuminate\Support\Facades\Auth;
 
 class RideController extends Controller
 {
-    
-     public function index(){
-        $cities = City::all();
-        return view('home', compact('cities'));
+    /**
+     * Show the form for creating a new ride.
+     */
+    public function create()
+    {
+        $driver = Auth::user();
+
+        if (!$driver->verified && !$driver->approved_at) {
+            return redirect()->route('driver.pending');
+        }
+
+        $cities = City::orderBy('name')->get();
+        return view('driver.create-ride', compact('cities'));
     }
 
-        public function search(Request $R){
-            $DepartCityId = $R->from;
-            $ArrivalCityId = $R->to;
+    /**
+     * Store a newly created ride in storage.
+     */
+    public function store(Request $request)
+    {
+        $driver = Auth::user();
 
-            $cities = City::all();
-            
-            $result = Trip::where('departure_city_id', $DepartCityId)
-                        ->where('arrival_city_id', $ArrivalCityId)
-                        ->with(['departureCity', 'arrivalCity']) 
-                        ->get();
-
-
-             foreach ($result as $trip) {
-                $lat1 = $trip->departureCity->x;
-                $lon1 = $trip->departureCity->y;
-                $lat2 = $trip->arrivalCity->x;
-                $lon2 = $trip->arrivalCity->y;
-                $trip->distance = $this->mapobj->calculateDistance($lat1, $lon1, $lat2, $lon2);
-            }            
-            return view('driver.create-ride', compact('result', 'cities'));
+        if (!$driver->verified && !$driver->approved_at) {
+            return redirect()->route('driver.pending');
         }
+
+        $validated = $request->validate([
+            'departure_city_id' => 'required|exists:cities,id',
+            'arrival_city_id' => 'required|exists:cities,id|different:departure_city_id',
+            'departure_date' => 'required|date|after:now',
+            'price_per_seat' => 'required|numeric|min:0',
+            'available_seats' => 'required|integer|min:1|max:8',
+        ]);
+
+        Trip::create([
+            'cheffeur_id' => $driver->id,
+            'departure_city_id' => $validated['departure_city_id'],
+            'arrival_city_id' => $validated['arrival_city_id'],
+            'departure_date' => $validated['departure_date'],
+            'price_per_seat' => $validated['price_per_seat'],
+            'available_seats' => $validated['available_seats'],
+            'status' => 'available',
+        ]);
+
+        return redirect()->route('driver.dashboard')->with('success', 'Your ride has been published successfully!');
+    }
 }

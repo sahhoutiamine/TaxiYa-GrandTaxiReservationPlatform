@@ -44,7 +44,7 @@
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-between items-center py-4">
-                <a href="../home.blade.php" class="flex items-center gap-3">
+                <a href="{{ route('home') }}" class="flex items-center gap-3">
                     <div class="w-12 h-12 bg-gradient-to-br from-secondary to-yellow-300 rounded-xl flex items-center justify-center transform rotate-45">
                         <svg class="w-7 h-7 text-white -rotate-45" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
@@ -55,9 +55,9 @@
                 </a>
 
                 <div class="flex items-center gap-6">
-                    <a href="dashboard.html" class="text-primary font-semibold">Dashboard</a>
-                    <a href="create-ride.html" class="text-gray-700 hover:text-primary font-medium transition-colors">Create Ride</a>
-                    <a href="earnings.html" class="text-gray-700 hover:text-primary font-medium transition-colors">Earnings</a>
+                    <a href="{{ route('driver.dashboard') }}" class="text-primary font-semibold">Dashboard</a>
+                    <a href="{{ route('rides.create') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Create Ride</a>
+                    <a href="#" class="text-gray-700 hover:text-primary font-medium transition-colors">Earnings</a>
                     <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                         <div class="text-right">
                             <div class="text-xs text-gray-500">Driver</div>
@@ -135,7 +135,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-black text-dark">My Rides</h2>
-                <a href="{{ route('dashboard.create') }}" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg flex items-center gap-2">
+                <a href="{{ route('rides.create') }}" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -232,7 +232,7 @@
                     <h3 class="text-2xl font-black text-dark mb-3">No Active Trips Found</h3>
                     <p class="text-gray-500 max-w-md mb-8">You haven't scheduled any upcoming trips yet. Start by creating a new ride to begin accepting passengers.</p>
                     
-                    <a href="create-ride.html" class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-primary/30 flex items-center gap-2 transform hover:-translate-y-1">
+                    <a href="{{ route('rides.create') }}" class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-primary/30 flex items-center gap-2 transform hover:-translate-y-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>

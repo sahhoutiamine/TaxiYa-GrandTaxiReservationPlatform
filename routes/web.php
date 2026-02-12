@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\RideController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\ReserveController;
 
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('payment/{id}', [ReserveController::class, 'index'])->name('payment');
     Route::post('payment/{id}', [ReserveController::class, 'store'])->name('payment.process');
+    
+    // Driver Ride Management
+    Route::get('/driver/rides/create', [RideController::class, 'create'])->name('rides.create');
+    Route::post('/driver/rides', [RideController::class, 'store'])->name('rides.store');
 });
 
 

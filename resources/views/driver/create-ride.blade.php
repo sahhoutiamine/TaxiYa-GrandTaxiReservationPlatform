@@ -47,7 +47,7 @@
             </a>
 
             <div class="flex items-center gap-6">
-                <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Dashboard</a>
+                <a href="{{ route('driver.dashboard') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Dashboard</a>
                 <a href="#" class="text-primary font-bold border-b-2 border-primary">Create Ride</a>
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                     <div class="text-right">
@@ -81,7 +81,6 @@
                 <form action="{{ route('rides.store') }}" method="POST" class="bg-white rounded-3xl shadow-xl p-8 space-y-8 border border-gray-100">
                     @csrf
                     
-                    <input type="hidden" name="available_seats" id="inputSeats" value="{{ $seats ?? 6 }}">
                     <input type="hidden" name="distance" id="inputDistance" value="{{ $distance ?? 0 }}">
 
                     <div>
@@ -118,6 +117,10 @@
                             <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Departure Date & Time</label>
                             <input type="datetime-local" name="departure_date" id="inputDate" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
                         </div>
+                        <div class="space-y-2 max-w-md mt-4">
+                            <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Available Seats</label>
+                            <input type="number" name="available_seats" id="inputSeats" min="1" max="8" value="4" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
+                        </div>
                     </div>
 
                     <hr class="border-gray-50">
@@ -146,7 +149,7 @@
                             <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-blue-800 rounded-3xl p-6 text-white shadow-xl shadow-primary/20 flex flex-col justify-center border border-white/10">
                                 <span class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Potential Earnings</span>
                                 <div class="text-4xl font-black" id="totalEarnings">0 MAD</div>
-                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Total for {{ $seats ?? 6 }} seats</div>
+                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Total for <span id="previewSeatsCount">{{ $seats ?? 6 }}</span> seats</div>
                             </div>
                         </div>
                     </div>
@@ -200,7 +203,7 @@
 
                         <div class="flex justify-between items-center px-2">
                              <span class="text-xs font-bold text-gray-500 uppercase">Available</span>
-                             <span class="text-accent font-black text-xs">{{ $seats ?? 6 }} Seats</span>
+                             <span class="text-accent font-black text-xs"><span id="previewSeatsText">{{ $seats ?? 6 }}</span> Seats</span>
                         </div>
                     </div>
                 </div>
@@ -233,6 +236,8 @@
         document.getElementById('previewTime').textContent = time;
         document.getElementById('previewPrice').textContent = price + ' MAD';
         document.getElementById('totalEarnings').textContent = (price * seats) + ' MAD';
+        document.getElementById('previewSeatsCount').textContent = seats;
+        document.getElementById('previewSeatsText').textContent = seats;
     }
 
     // Initialize on load to show controller defaults
