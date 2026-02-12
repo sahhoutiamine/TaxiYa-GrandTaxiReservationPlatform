@@ -35,4 +35,46 @@ class ReserveController extends Controller
             'arrivalDate' => $arrivalDate
         ]);
     }
+
+    public function store(Request $request, $id)
+    {
+        // 1. Validate Input
+        $request->validate([
+            'seat_number' => 'required|integer|between:1,6',
+            'cardholder_name' => 'required|string',
+        ]);
+
+        $isTaken = Reservation::where('trip_id', $id)
+            ->where('seat', $request->seat_number)
+            ->where('status', 'confirmed')
+            ->exists();
+
+        if ($isTaken) {
+            return back()->with('error', 'Sorry! That seat was just booked by another user.');
+        }
+
+        $trip = Trip::findOrFail($id);
+        $price = ($request->seat_number == 1)
+            ? $trip->price_per_seat * 1.20
+            : $trip->price_per_seat;
+
+        $reservation = Reservation::create([
+            'trip_id' => $id,
+            'user_id' => auth()->id(),
+            'seat' => $request->seat_number,
+            'status' => 'confirmed',
+            'total_price' => $price
+        ]);
+
+        \App\Models\Payment::create([
+            'reservation_id' => $reservation->id,
+            'amount' => $price,
+            'status' => 'paid',
+            'transaction_id' => 'TXN_' . strtoupper(uniqid()),
+            'paid_at' => now(),
+        ]);
+
+        // 6. Redirect to Ticket
+        return redirect()->route('mybookings');
+    }
 }
