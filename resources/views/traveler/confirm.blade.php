@@ -50,72 +50,64 @@
 
                 <div class="bg-gray-100 rounded-xl p-8 max-w-md mx-auto relative">
 
+                    {{-- Row 1: Driver & Seat 1 (Premium Seat) --}}
                     <div class="mb-6 flex justify-between px-4">
                         <div class="w-1/3"></div>
                         <div class="w-1/3">
                             <div class="bg-gray-300 h-16 rounded-lg flex items-center justify-center text-gray-500 text-xs font-bold mb-1">DRIVER</div>
                         </div>
                         <div class="w-1/3 pl-2">
-                            @php $isTaken = in_array(1, $takenSeats ?? []); @endphp
-                            <button id="seat-1"
+                            {{-- Seat 1 Logic: Price + 20% --}}
+                            @php
+                                $seatNum = 1;
+                                // Calculate 20% markup
+                                $price = $trip->price_per_seat * 1.20;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button id="seat-{{ $seatNum }}"
                                     @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                    @else onclick="selectSeat(1, 120)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
                                 @endif>
-                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">1</span>
-                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">120 MAD</span>@endif
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
                             </button>
                         </div>
                     </div>
 
+                    {{-- Row 2: Seats 2, 3, 4 (Standard Price) --}}
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        @php $isTaken = in_array(2, $takenSeats ?? []); @endphp
-                        <button id="seat-2"
-                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                @else onclick="selectSeat(2, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
-                            @endif>
-                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">2</span>
-                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
-                        </button>
-
-                        @php $isTaken = in_array(3, $takenSeats ?? []); @endphp
-                        <button id="seat-3"
-                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                @else onclick="selectSeat(3, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
-                            @endif>
-                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">3</span>
-                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
-                        </button>
-
-                        @php $isTaken = in_array(4, $takenSeats ?? []); @endphp
-                        <button id="seat-4"
-                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                @else onclick="selectSeat(4, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
-                            @endif>
-                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">4</span>
-                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
-                        </button>
+                        @foreach([2, 3, 4] as $seatNum)
+                            @php
+                                $price = $trip->price_per_seat;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button id="seat-{{ $seatNum }}"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
+                            </button>
+                        @endforeach
                     </div>
 
+                    {{-- Row 3: Seats 5, 6 (Standard Price) --}}
                     <div class="grid grid-cols-3 gap-2">
-                        @php $isTaken = in_array(5, $takenSeats ?? []); @endphp
-                        <button id="seat-5"
-                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                @else onclick="selectSeat(5, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
-                            @endif>
-                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">5</span>
-                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
-                        </button>
-
-                        @php $isTaken = in_array(6, $takenSeats ?? []); @endphp
-                        <button id="seat-6"
-                                @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
-                                @else onclick="selectSeat(6, 100)" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
-                            @endif>
-                            <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">6</span>
-                            @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">100 MAD</span>@endif
-                        </button>
-
-                        <div class="h-16 opacity-0"></div> </div>
+                        @foreach([5, 6] as $seatNum)
+                            @php
+                                $price = $trip->price_per_seat;
+                                $isTaken = in_array($seatNum, $takenSeats ?? []);
+                            @endphp
+                            <button id="seat-{{ $seatNum }}"
+                                    @if($isTaken) disabled class="w-full h-16 bg-gray-300 rounded-lg flex flex-col items-center justify-center cursor-not-allowed opacity-60"
+                                    @else onclick="selectSeat({{ $seatNum }}, {{ $price }})" class="seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group"
+                                @endif>
+                                <span class="font-bold {{ $isTaken ? 'text-gray-500' : 'text-dark' }}">{{ $seatNum }}</span>
+                                @if(!$isTaken)<span class="text-[10px] text-accent font-medium group-hover:text-primary">{{ number_format($price, 0) }} MAD</span>@endif
+                            </button>
+                        @endforeach
+                        <div class="h-16 opacity-0"></div>
+                    </div>
 
                 </div>
             </div>
@@ -161,23 +153,23 @@
                     <div class="absolute -left-[9px] bottom-0 w-4 h-4 rounded-full bg-secondary"></div>
 
                     <div class="mb-6">
-                        <p class="text-xs text-gray-500">08:00 AM</p>
-                        <p class="font-bold text-dark">Casablanca</p>
+                        <p class="text-xs text-gray-500">{{ $departureDate->format('h:i A') }}</p>
+                        <p class="font-bold text-dark">{{ $trip->departureCity->name }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500">11:30 AM</p>
-                        <p class="font-bold text-dark">Marrakech</p>
+                        <p class="text-xs text-gray-500">{{ $arrivalDate->format('h:i A') }} <span class="text-[10px]">(Est.)</span></p>
+                        <p class="font-bold text-dark">{{ $trip->arrivalCity->name }}</p>
                     </div>
                 </div>
 
                 <div class="py-4 border-t border-b border-gray-100 space-y-3 mb-6">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Date</span>
-                        <span class="font-medium text-dark">Feb 15, 2026</span>
+                        <span class="font-medium text-dark">{{ $departureDate->format('M d, Y') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Total Distance</span>
-                        <span class="font-medium text-dark">240 km</span>
+                        <span class="font-medium text-dark">{{ $distance }} km</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Seat Selected</span>
@@ -203,16 +195,11 @@
 </div>
 
 <script>
-    let currentPrice = 0;
-
     function selectSeat(seatNum, price) {
         // 1. Reset visual state of all buttons (except disabled ones)
-        // We select only buttons that are NOT disabled
         document.querySelectorAll('.seat-btn:not([disabled])').forEach(btn => {
-            // Restore default white styling
             btn.className = 'seat-btn w-full h-16 bg-white border-2 border-accent hover:border-primary rounded-lg flex flex-col items-center justify-center transition-all shadow-sm group';
 
-            // Reset inner text colors
             const spans = btn.getElementsByTagName('span');
             if(spans.length >= 2) {
                 spans[0].className = 'font-bold text-dark';
@@ -232,10 +219,9 @@
             }
         }
 
-        // 3. Update Summary Panel
+        // 3. Update Summary Panel with rounded price for display
         document.getElementById('summary-seat').innerText = `#${seatNum}`;
-        document.getElementById('summary-price').innerText = `${price} MAD`;
-        currentPrice = price;
+        document.getElementById('summary-price').innerText = `${Math.round(price)} MAD`;
 
         // 4. Enable Confirm Button
         const btn = document.getElementById('confirm-btn');
