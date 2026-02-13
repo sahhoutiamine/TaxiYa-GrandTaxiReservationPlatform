@@ -44,15 +44,18 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                    <th class="px-6 py-4">Driver Details</th>
-                    <th class="px-6 py-4">Vehicle</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4">Rating</th>
-                    <th class="px-6 py-4">Joined</th>
-                </tr>
+               <tr>
+    <th class="px-6 py-4">Driver</th>
+    <th class="px-6 py-4">Vehicle</th>
+    <th class="px-6 py-4">Status</th>
+    <th class="px-6 py-4">Rating</th>
+    <th class="px-6 py-4">Activity</th>
+    <th class="px-6 py-4">Earnings</th>
+    <th class="px-6 py-4">Joined</th>
+</tr>
+
                 </thead>
-               <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100">
 @foreach($drivers as $driver)
 <tr class="hover:bg-gray-50">
 
@@ -69,7 +72,7 @@
 </td>
 
 <td class="px-6 py-4 text-sm text-gray-600">
-    {{ $driver->car_model }} ({{ $driver->car_color }})
+    {{ $driver->Taxis->model ?? '-' }} ({{  $driver->Taxis->matricule ?? '-' }})
 </td>
 
 <td class="px-6 py-4">
@@ -81,7 +84,17 @@
 </td>
 
 <td class="px-6 py-4 font-bold text-dark">
-    {{ $driver->rating ?? '-' }}
+    ⭐ {{ number_format($driver->rating ?? 0,1) }}
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-500">
+    Trips: {{ $driver->trips_count }}
+    <br>
+    Reservations: {{ $driver->total_reservations }}
+</td>
+
+<td class="px-6 py-4 text-green-600 font-bold">
+    {{ number_format($driver->earnings,2) }} MAD
 </td>
 
 <td class="px-6 py-4 text-sm text-gray-500">
@@ -91,6 +104,7 @@
 </tr>
 @endforeach
 </tbody>
+
 
             </table>
         </div>

@@ -64,10 +64,11 @@ public function Taxis()
 
 
     // Chauffeur has created trips
-    public function driverTrips()
-    {
-        return $this->hasMany(Trip::class, 'cheffeur_id');
-    }
+ public function trips()
+{
+    return $this->hasMany(Trip::class, 'cheffeur_id');
+}
+
 
     // Voyageur makes reservations
     public function reservations()

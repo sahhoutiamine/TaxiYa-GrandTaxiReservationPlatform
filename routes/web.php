@@ -41,9 +41,15 @@ Route::middleware('auth')->group(function () {
 });
 
 
-    // Route::get('/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
-    // Route::get('/drivers', [AdminController::class,'drivers'])->name('admin.drivers');
-    // Route::get('/travelers', [AdminController::class,'travelers'])->name('admin.travelers');
-    // Route::get('/rides', [AdminController::class,'rides'])->name('admin.rides');
+Route::middleware(['auth','verified'])->name('admin.')->group(function () {
 
+    Route::get('/dashboard', [AdminController::class,'dashboard'])->name('dashboard');
+
+    Route::get('/drivers', [AdminController::class,'drivers'])->name('drivers');
+
+    Route::get('/travelers', [AdminController::class,'travelers'])->name('travelers');
+
+    Route::get('/rides', [AdminController::class,'rides'])->name('rides');
+
+});
 require __DIR__ . '/auth.php';
