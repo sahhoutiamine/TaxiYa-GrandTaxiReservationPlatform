@@ -22,8 +22,8 @@ Route::post('/search', function (\Illuminate\Http\Request $request) {
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // Dashboards
-    Route::get('/traveler/dashboard', [SearchController::class, 'search'])->name('traveler.dashboard');
-    
+Route::get('/traveler/dashboard', [SearchController::class, 'search'])->middleware(['auth', 'verified'])->name('dashboard');
+
     // Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

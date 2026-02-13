@@ -5,18 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rides - TaxiYa Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: '#1E40AF', secondary: '#FBBF24', accent: '#10B981', dark: '#111827' },
-                    fontFamily: { display: ['Poppins', 'sans-serif'], body: ['Inter', 'sans-serif'] }
+                    colors: {primary: '#1E40AF', secondary: '#FBBF24', accent: '#10B981', dark: '#111827'},
+                    fontFamily: {display: ['Poppins', 'sans-serif'], body: ['Inter', 'sans-serif']}
                 }
             }
         }
     </script>
-    <style>body { font-family: 'Inter', sans-serif; } h1, h2, h3 { font-family: 'Poppins', sans-serif; }</style>
+    <style>body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+        }</style>
 </head>
 <body class="bg-gray-100 h-screen flex overflow-hidden">
 
@@ -26,10 +34,18 @@
     </div>
     <nav class="flex-1 overflow-y-auto py-6">
         <ul class="space-y-2 px-4">
-            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
-            <li><a href="{{ route('admin.drivers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
-            <li><a href="{{ route('admin.travelers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a></li>
-            <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a></li>
+            <li><a href="dashboard.html"
+                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a>
+            </li>
+            <li><a href="drivers.html"
+                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a>
+            </li>
+            <li><a href="travelers.html"
+                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a>
+            </li>
+            <li><a href="rides.html"
+                   class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a>
+            </li>
         </ul>
     </nav>
 </aside>
@@ -54,47 +70,44 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                @forelse($rides as $ride)
-                    @php
-                        // Logic l-alwan 3la hsab status
-                        $statusStyles = [
-                            'ACTIVE'    => 'bg-blue-100 text-blue-700',
-                            'COMPLETED' => 'bg-green-100 text-green-700',
-                            'CANCELLED' => 'bg-red-100 text-red-700',
-                        ];
-                        $currentStyle = $statusStyles[$ride->status] ?? 'bg-gray-100 text-gray-700';
-                    @endphp
-
-                    <tr class="hover:bg-gray-50 {{ $ride->status == 'ACTIVE' ? 'border-l-4 border-l-primary' : '' }}">
+                @foreach($rides as $ride)
+                    <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 font-mono text-sm text-gray-500">
                             #{{ $ride->id }}
                         </td>
+
                         <td class="px-6 py-4 font-semibold text-dark">
-                            {{ $ride->departure_city }} → {{ $ride->arrival_city }}
+                            {{ $ride->departureCity->name }} → {{ $ride->arrivalCity->name }}
                         </td>
+
                         <td class="px-6 py-4 text-sm">
-                            {{ $ride->driver->name ?? 'No Driver' }}
+                            {{ $ride->cheffeur->name }}
                         </td>
+
                         <td class="px-6 py-4 text-sm text-gray-600">
-                            {{-- Kantfardou khtdamti b Carbon f l-model --}}
-                            {{ $ride->departure_time->format('M d, h:i A') }}
+                            {{ $ride->departure_date->format('Y M d, h:i A') }}
                         </td>
+
                         <td class="px-6 py-4 text-sm">
-                            <span class="font-bold text-dark">{{ $ride->booked_seats }}</span>/{{ $ride->total_seats }} Booked
+                            <span class="font-bold text-dark">{{ $ride->reservations_sum_seat ?? 0 }}</span>/6 Booked
                         </td>
+
                         <td class="px-6 py-4">
-                            <span class="px-2 py-1 {{ $currentStyle }} rounded text-xs font-bold uppercase">
+                            @php
+                                $statusClasses = match($ride->status) {
+                                    'completed' => 'bg-green-100 text-green-700',
+                                    'active'    => 'bg-blue-100 text-blue-700',
+                                    'cancelled' => 'bg-red-100 text-red-700',
+                                    'waiting'   => 'bg-yellow-100 text-yellow-700',
+                                    default     => 'bg-gray-100 text-gray-700',
+                                };
+                            @endphp
+                            <span class="px-2 py-1 rounded text-xs font-bold uppercase {{ $statusClasses }}">
                                 {{ $ride->status }}
                             </span>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-gray-500">
-                            No rides found.
-                        </td>
-                    </tr>
-                @endforelse
+                @endforeach
                 </tbody>
             </table>
         </div>

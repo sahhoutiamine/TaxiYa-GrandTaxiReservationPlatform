@@ -26,10 +26,10 @@
     </div>
     <nav class="flex-1 overflow-y-auto py-6">
         <ul class="space-y-2 px-4">
-            <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
-            <li><a href="drivers.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
-            <li><a href="travelers.html" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Travelers</a></li>
-            <li><a href="rides.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Rides</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
+            <li><a href="{{ route('admin.drivers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
+            <li><a href="{{ route('admin.travelers') }}" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Travelers</a></li>
+            <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Rides</a></li>
         </ul>
     </nav>
 </aside>
@@ -53,27 +53,38 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-semibold text-dark">Ahmed Alami</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">ahmed@example.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">12</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">2 hours ago</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span> Active</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-semibold text-dark">Sarah Benjelloun</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">sarah.b@example.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">5</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Yesterday</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span> Active</td>
-                </tr>
-                <tr class="hover:bg-gray-50 bg-red-50/50">
-                    <td class="px-6 py-4 font-semibold text-dark">Spam Account</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">spam@fake.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">0</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Jan 01, 2026</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-red-500 rounded-full inline-block mr-2"></span> Suspended</td>
-                </tr>
+                @forelse($travelers as $traveler)
+                    @php
+                        $isSuspended = $traveler->status === 'suspended';
+                    @endphp
+                    <tr class="hover:bg-gray-50 {{ $isSuspended ? 'bg-red-50/50' : '' }}">
+                        <td class="px-6 py-4 font-semibold text-dark">
+                            {{ $traveler->name }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {{ $traveler->email }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-dark">
+                            {{ $traveler->voyageur_trips_count }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{-- Bach t-affichi "2 hours ago" matalan --}}
+                            {{ $traveler->last_active_at ? $traveler->last_active_at->diffForHumans() : 'Never' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 {{ $isSuspended ? 'bg-red-500' : 'bg-green-500' }} rounded-full inline-block mr-2"></span>
+                                <span class="capitalize">{{ $traveler->status }}</span>
+                            </span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">
+                            No travelers found in the database.
+                        </td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>

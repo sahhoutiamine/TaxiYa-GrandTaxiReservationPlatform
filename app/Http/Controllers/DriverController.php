@@ -43,16 +43,12 @@ class DriverController extends Controller
             $todaysEarnings += $trip->reservations->sum('total_price');
         }
 
-        // 4. Total Rating: Average of 'rate' column in reservations for ALL trips of this driver
-        // We need all trips IDs for this driver to calculate global rating
-        $allDriverTripIds = Trip::where('cheffeur_id', $driver->id)->pluck('id');
-        $averageRating = Reservation::whereIn('trip_id', $allDriverTripIds)
-                                    ->where('status', 'confirmed') // Also filter rating to confirmed trips
-                                    ->whereNotNull('rate')
-                                    ->avg('rate');
+        // 4. Total Rating: Using accessors from User model
+        $averageRating = $driver->average_rating;
+        $ratingsCount = $driver->ratings_count;
 
-        // Formating the rating to 1 decimal place, default to 0 if null
-        $formattedRating = number_format($averageRating ?: 0, 1);
+        // Formating the rating to 1 decimal place
+        $formattedRating = number_format($averageRating, 1);
 
         // 5. Trips List: Dynamic list of trips (Active and Upcoming)
         // Let's get all future trips including today, ordered by date
@@ -71,6 +67,7 @@ class DriverController extends Controller
             'totalSeatsCapacity',
             'todaysEarnings',
             'formattedRating',
+            'ratingsCount',
             'trips'
         ));
     }
