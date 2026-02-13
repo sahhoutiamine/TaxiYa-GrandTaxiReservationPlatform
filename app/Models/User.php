@@ -115,4 +115,13 @@ public function Taxis()
             $query->where('cheffeur_id', $this->id);
         })->whereNotNull('rate')->count();
     }
+
+
+     public function voyageurTrips()
+    {
+        return $this->hasMany(Reservation::class, 'user_id');
+    }
+
+
+
 }

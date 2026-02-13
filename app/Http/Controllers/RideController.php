@@ -19,14 +19,12 @@ class RideController extends Controller
         if (!$driver->verified && !$driver->approved_at) {
             return redirect()->route('driver.pending');
         }
-
+      
         $cities = City::orderBy('name')->get();
         return view('driver.create-ride', compact('cities'));
     }
 
-    /**
-     * Store a newly created ride in storage.
-     */
+    
     public function store(Request $request)
     {
         $driver = Auth::user();
@@ -40,7 +38,6 @@ class RideController extends Controller
             'arrival_city_id' => 'required|exists:cities,id|different:departure_city_id',
             'departure_date' => 'required|date|after:now',
             'price_per_seat' => 'required|numeric|min:0',
-            'available_seats' => 'required|integer|min:1|max:8',
         ]);
 
         $departureCity = City::find($validated['departure_city_id']);

@@ -33,7 +33,7 @@ class SearchController extends Controller
 
     public function showSearchPage(){
         $cities = City::all();
-        $result = collect(); // Empty collection for initial page load
+        $result = collect(); 
         return view('traveler.search', compact('cities', 'result'));
     }
 
