@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('payment/{id}', [ReserveController::class, 'index'])->name('payment');
     Route::post('payment/{id}', [ReserveController::class, 'store'])->name('payment.process');
-    
+
     // Driver Ride Management
     Route::get('/driver/rides/create', [RideController::class, 'create'])->name('rides.create');
     Route::post('/driver/rides', [RideController::class, 'store'])->name('rides.store');
@@ -42,5 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });
 
-require __DIR__.'/auth.php';
+Route::view('/dashboard', 'admin.dashboard');
+Route::view('/drivers', 'admin.drivers');
+Route::view('/travelers', 'admin.travelers');
+Route::view('/rides', 'admin.rides');
+
 
