@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/drivers', [AdminController::class, 'drivers'])->name('admin.drivers');
     Route::get('/admin/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
     Route::get('/admin/rides', [AdminController::class, 'rides'])->name('admin.rides');
+    Route::get('/admin/rides/{id}/reservations', [AdminController::class, 'reservations'])->name('admin.reservations');
     Route::post('/admin/drivers/{id}/verify', [AdminController::class, 'verifyDriver'])->name('admin.drivers.verify');
     Route::post('/admin/drivers/{id}/reject', [AdminController::class, 'rejectDriver'])->name('admin.drivers.reject');
 });

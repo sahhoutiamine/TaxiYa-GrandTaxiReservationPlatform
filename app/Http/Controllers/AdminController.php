@@ -49,13 +49,22 @@ class AdminController extends Controller
     public function rides()
     {
         $rides = Trip::with(['cheffeur', 'departureCity', 'arrivalCity'])
-            ->withSum(['reservations' => function ($query) {
+            ->withCount(['reservations' => function ($query) {
                 $query->where('status', 'confirmed');
-            }], 'seat')
+            }])
             ->orderBy('departure_date', 'desc')
             ->get();
 
         return view('admin.rides', compact('rides'));
+    }
+
+    public function reservations($id)
+    {
+        $reservations = Reservation::with(['user', 'trip.departureCity', 'trip.arrivalCity'])
+            ->where('trip_id', $id)
+            ->get();
+
+        return view('admin.reservations', compact('reservations'));
     }
 
     public function verifyDriver($id)
