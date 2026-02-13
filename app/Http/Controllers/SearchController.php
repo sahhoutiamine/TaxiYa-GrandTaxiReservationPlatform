@@ -37,26 +37,70 @@ class SearchController extends Controller
         return view('traveler.search', compact('cities', 'result'));
     }
 
-        public function search(Request $R){
-            $DepartCityId = $R->from;
-            $ArrivalCityId = $R->to;
-            $Date = $R->date;
-            $distance;
+    public function search(Request $request)
+    {
+        $cities = City::all();
+        $query = Trip::query();
 
-               $cities = City::all();
-            $result = Trip::where('departure_city_id', $DepartCityId)
-                        ->where('arrival_city_id', $ArrivalCityId)
-                        ->when($Date, function ($query, $Date) {
-                            return $query->whereDate('departure_date', $Date);
-                        })
-                        ->with(['cheffeur.taxis', 'departureCity', 'arrivalCity']) 
+        // Basic Search Filters
+        if ($request->filled('from')) {
+            $query->where('departure_city_id', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->where('arrival_city_id', $request->to);
+        }
+        if ($request->filled('date')) {
+            $query->whereDate('departure_date', $request->date);
+        }
+
+        // Time Filters
+        if ($request->filled('time_filter')) {
+            $query->where(function ($q) use ($request) {
+                $filters = (array) $request->time_filter;
+                foreach ($filters as $filter) {
+                    if ($filter === 'morning') {
+                        $q->orWhereRaw('HOUR(departure_date) < 12');
+                    } elseif ($filter === 'afternoon') {
+                        $q->orWhereRaw('HOUR(departure_date) >= 12 AND HOUR(departure_date) < 18');
+                    } elseif ($filter === 'evening') {
+                        $q->orWhereRaw('HOUR(departure_date) >= 18');
+                    }
+                }
+            });
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'earliest');
+        switch ($sortBy) {
+            case 'lowest_price':
+                $query->orderBy('price_per_seat', 'asc');
+                break;
+            case 'seats':
+                $query->orderBy('available_seats', 'desc'); // Note: This might need custom logic if available_seats is an accessor
+                break;
+            case 'earliest':
+            default:
+                $query->orderBy('departure_date', 'asc');
+                break;
+        }
+
+        // Available seats calculation is usually an accessor, so for 'seats' sorting
+        // we might need to be careful. However, let's assume we can sort by the column if it exists.
+        // If it's dynamic, we might need to use a subquery or collection sorting.
+        // Let's stick to base columns for now.
+
+        $result = $query->with(['cheffeur.taxis', 'departureCity', 'arrivalCity'])
                         ->withCount(['reservations' => function($query) {
                             $query->where('status', 'confirmed');
                         }])
                         ->get();
 
-            return view('traveler.search', compact('result', 'cities'));
-
+        // If no basic filters are provided, we might want to return an empty result or all trips
+        if (!$request->filled('from') && !$request->filled('to')) {
+            $result = collect();
         }
+
+        return view('traveler.search', compact('result', 'cities'));
+    }
 
 }

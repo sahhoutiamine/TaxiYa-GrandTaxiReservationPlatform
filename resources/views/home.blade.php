@@ -146,8 +146,7 @@
             <!-- Search Card -->
             <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
                 <h3 class="text-2xl font-bold text-dark mb-6">Find Your Ride</h3>
-                <form action="{{ route('search') }}" method="POST">
-                    @csrf
+                <form action="{{ route('search') }}" method="GET">
                     <div class="space-y-4 mb-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">From</label>
