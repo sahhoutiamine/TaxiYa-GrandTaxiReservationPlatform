@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 Route::get('/', [SearchController::class, 'index'])->name('home');
 
 // Search functionality
-Route::get('/search', [SearchController::class, 'search'])->name('search.index');
-Route::post('/search/redirect', function (Request $request) {
-    return redirect()->route('search.index', $request->all());
-})->name('search.redirect');
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::post('/search', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('search', $request->all());
+});
 
 
 // --- 2. Authenticated Routes (Travelers & General) ---
@@ -49,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // --- 4. Admin Routes ---
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/drivers', [AdminController::class, 'drivers'])->name('admin.drivers');
     Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');

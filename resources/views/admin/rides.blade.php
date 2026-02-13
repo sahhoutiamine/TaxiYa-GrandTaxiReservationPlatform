@@ -26,10 +26,10 @@
     </div>
     <nav class="flex-1 overflow-y-auto py-6">
         <ul class="space-y-2 px-4">
-            <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
-            <li><a href="drivers.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
-            <li><a href="travelers.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a></li>
-            <li><a href="rides.html" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
+            <li><a href="{{ route('admin.drivers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
+            <li><a href="{{ route('admin.travelers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a></li>
+            <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a></li>
         </ul>
     </nav>
 </aside>
@@ -54,30 +54,47 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                <tr class="hover:bg-gray-50 border-l-4 border-l-primary">
-                    <td class="px-6 py-4 font-mono text-sm text-gray-500">#12345</td>
-                    <td class="px-6 py-4 font-semibold text-dark">Casablanca → Marrakech</td>
-                    <td class="px-6 py-4 text-sm">Mohamed El Fassi</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">Today, 08:00 AM</td>
-                    <td class="px-6 py-4 text-sm"><span class="font-bold text-dark">3</span>/6 Booked</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">ACTIVE</span></td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-mono text-sm text-gray-500">#12340</td>
-                    <td class="px-6 py-4 font-semibold text-dark">Rabat → Fes</td>
-                    <td class="px-6 py-4 text-sm">Youssef Amrani</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">Yesterday, 02:00 PM</td>
-                    <td class="px-6 py-4 text-sm"><span class="font-bold text-dark">6</span>/6 Booked</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">COMPLETED</span></td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-mono text-sm text-gray-500">#12338</td>
-                    <td class="px-6 py-4 font-semibold text-dark">Tanger → Tetouan</td>
-                    <td class="px-6 py-4 text-sm">Karim Tazi</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">Feb 10, 10:00 AM</td>
-                    <td class="px-6 py-4 text-sm"><span class="font-bold text-dark">0</span>/6 Booked</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold">CANCELLED</span></td>
-                </tr>
+                @forelse($rides as $ride)
+                    @php
+                        // Logic l-alwan 3la hsab status
+                        $statusStyles = [
+                            'ACTIVE'    => 'bg-blue-100 text-blue-700',
+                            'COMPLETED' => 'bg-green-100 text-green-700',
+                            'CANCELLED' => 'bg-red-100 text-red-700',
+                        ];
+                        $currentStyle = $statusStyles[$ride->status] ?? 'bg-gray-100 text-gray-700';
+                    @endphp
+
+                    <tr class="hover:bg-gray-50 {{ $ride->status == 'ACTIVE' ? 'border-l-4 border-l-primary' : '' }}">
+                        <td class="px-6 py-4 font-mono text-sm text-gray-500">
+                            #{{ $ride->id }}
+                        </td>
+                        <td class="px-6 py-4 font-semibold text-dark">
+                            {{ $ride->departure_city }} → {{ $ride->arrival_city }}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            {{ $ride->driver->name ?? 'No Driver' }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {{-- Kantfardou khtdamti b Carbon f l-model --}}
+                            {{ $ride->departure_time->format('M d, h:i A') }}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="font-bold text-dark">{{ $ride->booked_seats }}</span>/{{ $ride->total_seats }} Booked
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 {{ $currentStyle }} rounded text-xs font-bold uppercase">
+                                {{ $ride->status }}
+                            </span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                            No rides found.
+                        </td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>
