@@ -173,7 +173,7 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
-                            <input type="date" name="date" value="{{ request('date') }}" required
+                            <input type="date" name="date" value="{{ request('date') }}"
                                    class="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-gray-900">
                         </div>
                     </div>

@@ -168,13 +168,13 @@
                                 <div class="text-right">
                                     <div class="text-sm text-gray-600 mb-1">To</div>
                                     <div class="text-xl font-bold text-dark">{{ $trip->arrivalCity->name }}</div>
-                                    <div class="text-sm text-gray-600">{{ $trip->departure_date->addHours(2)->format('g:i A') }}</div>
+                                    <div class="text-sm text-gray-600">{{ $trip->arrival_date->format('g:i A') }}</div>
                                 </div>
                             </div>
 
                             <div class="flex items-center gap-4 text-sm text-gray-600">
                                 <span>📅 {{ $trip->departure_date->format('M d, Y') }}</span>
-                                <span>⏱️ 2h 00m</span>
+                                <span>⏱️ {{ floor($trip->duration_hours) }}h {{ round(($trip->duration_hours - floor($trip->duration_hours)) * 60) }}m</span>
                                 <span class="font-semibold text-primary">{{ number_format($trip->price_per_seat, 0) }} MAD/seat</span>
                             </div>
                         </div>

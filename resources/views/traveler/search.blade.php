@@ -90,7 +90,7 @@
                 </select>
             </div>
             <div class="flex-1">
-                <input type="date" value="" name ="date"
+                <input type="date" value="{{ request('date') }}" name ="date"
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
             </div>
             <button type="submit"
@@ -181,16 +181,16 @@
                             <div class="text-xs text-gray-500">{{ $trip->departureCity->name}}</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-xs text-gray-600 mb-1">Status</div>
-                            <div class="font-bold text-accent uppercase text-[10px]">{{ $trip->status }}</div>
+                            <div class="text-xs text-gray-600 mb-1">Duration</div>
+                            <div class="font-bold text-dark text-[10px]">{{ floor($trip->duration_hours) }}h {{ round(($trip->duration_hours - floor($trip->duration_hours)) * 60) }}m</div>
                         </div>
                         <div class="text-center border-l border-gray-200">
                             <div class="text-xs text-gray-600 mb-1">Distance</div>
-                            <div class="font-bold text-dark">{{$trip->distance}} km</div>
+                            <div class="font-bold text-dark">{{ round($trip->distance) }} km</div>
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-600 mb-1">Arrival</div>
-                            <div class="font-bold text-dark">---</div>
+                            <div class="font-bold text-dark">{{ $trip->arrival_date->format('h:i A') }}</div>
                             <div class="text-xs text-gray-500">{{ $trip->arrivalCity->name}}</div>
                         </div>
                     </div>
