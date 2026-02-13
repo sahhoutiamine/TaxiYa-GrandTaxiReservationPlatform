@@ -123,8 +123,8 @@
                                     <div class="w-full h-0.5 bg-gray-200 relative">
                                         <div class="absolute -top-1.5 left-0 w-3 h-3 rounded-full bg-primary"></div>
                                         <div class="absolute -top-1.5 right-0 w-3 h-3 rounded-full bg-primary"></div>
-                                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-100 px-2 text-gray-500 text-xs">
-                                            Ride
+                                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-100 px-2 text-gray-500 text-xs whitespace-nowrap">
+                                            {{ floor($reservation->trip->duration_hours) }}h {{ round(($reservation->trip->duration_hours - floor($reservation->trip->duration_hours)) * 60) }}m
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@
                                 <div class="text-right">
                                     <div class="text-sm text-gray-500 mb-1">To</div>
                                     <div class="text-2xl font-bold text-dark">{{ $reservation->trip->arrivalCity->name }}</div>
-                                    <div class="text-primary font-semibold">---</div>
+                                    <div class="text-primary font-semibold">{{ $reservation->trip->arrival_date->format('h:i A') }}</div>
                                 </div>
                             </div>
 

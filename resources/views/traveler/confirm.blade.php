@@ -193,11 +193,11 @@
                     <div class="absolute -left-[9px] bottom-0 w-4 h-4 rounded-full bg-secondary"></div>
 
                     <div class="mb-6">
-                        <p class="text-xs text-gray-500">{{ $departureDate->format('h:i A') }}</p>
+                        <p class="text-xs text-gray-500">{{ $trip->departure_date->format('h:i A') }}</p>
                         <p class="font-bold text-dark">{{ $trip->departureCity->name }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500">{{ $arrivalDate->format('h:i A') }} <span class="text-[10px]">(Est.)</span></p>
+                        <p class="text-xs text-gray-500">{{ $trip->arrival_date->format('h:i A') }} <span class="text-[10px]">(Est.)</span></p>
                         <p class="font-bold text-dark">{{ $trip->arrivalCity->name }}</p>
                     </div>
                 </div>
@@ -205,11 +205,11 @@
                 <div class="py-4 border-t border-b border-gray-100 space-y-3 mb-6">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Date</span>
-                        <span class="font-medium text-dark">{{ $departureDate->format('M d, Y') }}</span>
+                        <span class="font-medium text-dark">{{ $trip->departure_date->format('M d, Y') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Total Distance</span>
-                        <span class="font-medium text-dark">{{ $distance }} km</span>
+                        <span class="font-medium text-dark">{{ round($trip->distance) }} km</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Seat Selected</span>
