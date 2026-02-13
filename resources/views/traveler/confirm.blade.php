@@ -26,7 +26,21 @@
             Back to Search
         </a>
         <div class="text-xl font-display font-black text-dark">Checkout</div>
-        <div class="w-20"></div>
+        @auth
+        <div class="flex items-center gap-4">
+            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                    Logout
+                </button>
+            </form>
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                {{ substr(auth()->user()->name, 0, 1) }}
+            </div>
+        </div>
+        @else
+        <a href="{{ route('login') }}" class="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all">Login</a>
+        @endauth
     </div>
 </nav>
 

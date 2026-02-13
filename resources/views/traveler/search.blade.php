@@ -46,8 +46,22 @@
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}" class="text-primary font-semibold">Search</a>
                 <a href="{{ route('mybookings') }}" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
-                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">A
+                
+                @auth
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-100">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
                 </div>
+                @else
+                    <a href="{{ route('login') }}" class="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all">Login</a>
+                @endauth
             </div>
         </div>
     </div>
@@ -105,16 +119,39 @@
 
             <!-- Results List -->
             <div class="md:col-span-3">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-black text-dark mb-2">Available Rides</h2>
-                    <p class="text-gray-600">12 rides found from Casablanca to Marrakech on Feb 15, 2026</p>
+                <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 text-primary font-bold text-sm mb-1 uppercase tracking-wider">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Search Results
+                        </div>
+                        <h2 class="text-3xl font-black text-dark mb-2">Available Rides</h2>
+                        <p class="text-gray-600 flex items-center gap-2">
+                            <span class="font-bold text-primary">{{ $result->count() }}</span> rides found 
+                            @if(request('from') && request('to'))
+                                from <span class="font-semibold text-dark">{{ $cities->find(request('from'))?->name ?? 'Unknown' }}</span> 
+                                to <span class="font-semibold text-dark">{{ $cities->find(request('to'))?->name ?? 'Unknown' }}</span>
+                            @endif
+                            @if(request('date'))
+                                on <span class="font-semibold text-dark">{{ \Carbon\Carbon::parse(request('date'))->format('M d, Y') }}</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500">Sort by:</span>
+                        <select class="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none">
+                            <option>Earliest Departure</option>
+                            <option>Lowest Price</option>
+                            <option>Available Seats</option>
+                        </select>
+                    </div>
                 </div>
 
 
 
 
-                @foreach($result as $trip)
-                <div class="space-y-6">
+                @forelse($result as $trip)
+                <div class="space-y-6 mb-6">
                     <!-- Ride Card 1 -->
                     <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-primary">
                         <div class="flex justify-between items-start mb-4">
@@ -129,7 +166,7 @@
                                     </div>
                                 </div>
                                 <h3 class="font-bold text-lg text-dark">{{ $trip->cheffeur->name}}</h3>
-                                <p class="text-sm text-gray-600">{{$trip->cheffeur->taxis->model}} - ABC 12345</p>
+                                <p class="text-sm text-gray-600">{{$trip->cheffeur->taxis->model ?? 'Standard Taxi'}} - {{ $trip->cheffeur->taxis->license_plate ?? 'ABC 1234' }}</p>
                             </div>
                             <div class="text-right">
                                 <div class="text-3xl font-black text-primary">{{ $trip->price_per_seat}} MAD</div>
@@ -140,21 +177,12 @@
                     <div class="grid grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-xl">
                         <div>
                             <div class="text-xs text-gray-600 mb-1">Departure</div>
-                            @php
-                                $hour = rand(6, 22);
-                                $hourariv =$hour + rand(1,10);
-                                $minute = rand(0, 59);
-
-
-                            @endphp
-
-
-                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hour, $minute) }} AM</div>
+                            <div class="font-bold text-dark">{{ $trip->departure_date->format('h:i A') }}</div>
                             <div class="text-xs text-gray-500">{{ $trip->departureCity->name}}</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-xs text-gray-600 mb-1">Duration</div>
-                            <div class="font-bold text-dark">{{$hourariv-$hour}} H</div>
+                            <div class="text-xs text-gray-600 mb-1">Status</div>
+                            <div class="font-bold text-accent uppercase text-[10px]">{{ $trip->status }}</div>
                         </div>
                         <div class="text-center border-l border-gray-200">
                             <div class="text-xs text-gray-600 mb-1">Distance</div>
@@ -162,7 +190,7 @@
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-600 mb-1">Arrival</div>
-                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hourariv , $minute) }} AM</div>
+                            <div class="font-bold text-dark">---</div>
                             <div class="text-xs text-gray-500">{{ $trip->arrivalCity->name}}</div>
                         </div>
                     </div>
@@ -177,7 +205,16 @@
                         </a>
                     </div>
                 </div>
-@endforeach
+                </div>
+                @empty
+                <div class="bg-white rounded-3xl p-12 text-center shadow-sm border border-gray-100">
+                    <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-dark mb-3">No rides found</h3>
+                    <p class="text-gray-500 max-w-sm mx-auto mb-8">We couldn't find any taxis for this route on the selected date. Try changing your search parameters.</p>
+                </div>
+                @endforelse
 
 
 

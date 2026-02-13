@@ -7,9 +7,29 @@ use App\Models\Reservation;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ReserveController extends Controller
 {
+    public function myBookings()
+    {
+        $user = Auth::user();
+        $reservations = Reservation::where('user_id', $user->id)
+            ->with(['trip.departureCity', 'trip.arrivalCity', 'trip.cheffeur.taxis'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $upcoming = $reservations->filter(function ($reservation) {
+            return $reservation->trip && $reservation->trip->departure_date->isFuture();
+        });
+
+        $history = $reservations->filter(function ($reservation) {
+            return $reservation->trip && $reservation->trip->departure_date->isPast();
+        });
+
+        return view('traveler.mybookings', compact('upcoming', 'history'));
+    }
+
     public function index($id)
     {
         $trip = Trip::with(['departureCity', 'arrivalCity'])->findOrFail($id);
@@ -76,5 +96,21 @@ class ReserveController extends Controller
 
         // 6. Redirect to Ticket
         return redirect()->route('mybookings');
+    }
+    public function rate(Request $request, $id)
+    {
+        $request->validate([
+            'rate' => 'required|integer|between:1,5',
+        ]);
+
+        $reservation = Reservation::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $reservation->update([
+            'rate' => $request->rate
+        ]);
+
+        return response()->json(['message' => 'Thank you for your rating!']);
     }
 }
