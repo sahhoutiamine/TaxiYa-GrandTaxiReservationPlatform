@@ -64,10 +64,11 @@ public function Taxis()
 
 
     // Chauffeur has created trips
-    public function driverTrips()
-    {
-        return $this->hasMany(Trip::class, 'cheffeur_id');
-    }
+ public function trips()
+{
+    return $this->hasMany(Trip::class, 'cheffeur_id');
+}
+
 
     // Voyageur makes reservations
     public function reservations()
@@ -114,4 +115,13 @@ public function Taxis()
             $query->where('cheffeur_id', $this->id);
         })->whereNotNull('rate')->count();
     }
+
+
+     public function voyageurTrips()
+    {
+        return $this->hasMany(Reservation::class, 'user_id');
+    }
+
+
+
 }

@@ -63,17 +63,36 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                 @forelse($travelers as $traveler)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-semibold text-dark">{{ $traveler->name }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">{{ $traveler->email }}</td>
-                    <td class="px-6 py-4 text-sm text-dark">{{ $traveler->phone ?? 'N/A' }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">{{ $traveler->created_at->format('M d, Y') }}</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span> Active</td>
-                </tr>
+                    @php
+                        $isSuspended = $traveler->status === 'suspended';
+                    @endphp
+                    <tr class="hover:bg-gray-50 {{ $isSuspended ? 'bg-red-50/50' : '' }}">
+                        <td class="px-6 py-4 font-semibold text-dark">
+                            {{ $traveler->name }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {{ $traveler->email }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-dark">
+                            {{ $traveler->voyageur_trips_count }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{-- Bach t-affichi "2 hours ago" matalan --}}
+                            {{ $traveler->last_active_at ? $traveler->last_active_at->diffForHumans() : 'Never' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 {{ $isSuspended ? 'bg-red-500' : 'bg-green-500' }} rounded-full inline-block mr-2"></span>
+                                <span class="capitalize">{{ $traveler->status }}</span>
+                            </span>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No travelers found</td>
-                </tr>
+                    <tr>
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">
+                            No travelers found in the database.
+                        </td>
+                    </tr>
                 @endforelse
                 </tbody>
             </table>

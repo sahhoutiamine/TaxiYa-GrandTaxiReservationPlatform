@@ -91,7 +91,7 @@
                         </td>
 
                         <td class="px-6 py-4 text-sm">
-                            <span class="font-bold text-dark">{{ $ride->reservations_count ?? 0 }}</span>/6 Booked
+                            <span class="font-bold text-dark">{{ $ride->booked_seats ?? 0 }}</span>/6 Booked
                         </td>
 
                         <td class="px-6 py-4">
@@ -105,8 +105,19 @@
                                 };
                             @endphp
                             <span class="px-2 py-1 rounded text-xs font-bold uppercase {{ $statusClasses }}">
-                                {{ $ride->status }}
-                            </span>
+                        {{ $ride->status }}
+                    </span>
+                        </td>
+
+                        <td class="px-6 py-4 text-right">
+                            <a href="{{ route('admin.reservations', $ride->id) }}"
+                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg transition-all text-xs font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                View
+                            </a>
                         </td>
 
                         <td class="px-6 py-4 text-right">

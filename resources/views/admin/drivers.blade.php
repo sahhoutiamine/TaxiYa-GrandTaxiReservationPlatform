@@ -59,57 +59,68 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                    <th class="px-6 py-4">Driver Details</th>
-                    <th class="px-6 py-4">Vehicle</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4">Rating</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
+               <tr>
+    <th class="px-6 py-4">Driver</th>
+    <th class="px-6 py-4">Vehicle</th>
+    <th class="px-6 py-4">Status</th>
+    <th class="px-6 py-4">Rating</th>
+    <th class="px-6 py-4">Activity</th>
+    <th class="px-6 py-4">Earnings</th>
+    <th class="px-6 py-4">Joined</th>
+</tr>
+
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                @forelse($drivers as $driver)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">{{ substr($driver->name, 0, 1) }}</div>
-                            <div>
-                                <div class="font-semibold text-dark">{{ $driver->name }}</div>
-                                <div class="text-xs text-gray-500">{{ $driver->phone }}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">
-                        @if($driver->Taxis)
-                            {{ $driver->Taxis->brand }} {{ $driver->Taxis->model }} ({{ $driver->Taxis->color }})
-                            <div class="text-xs text-gray-400">{{ $driver->Taxis->license_plate }}</div>
-                        @else
-                            No Vehicle Info
-                        @endif
-                    </td>
-                    <td class="px-6 py-4">
-                        @if($driver->verified)
-                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">VERIFIED</span>
-                        @else
-                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">PENDING</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 font-bold text-dark">{{ number_format($driver->average_rating, 1) }} ★</td>
-                    <td class="px-6 py-4 text-right">
-                        @if(!$driver->verified)
-                            <form action="{{ route('admin.drivers.verify', $driver->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="text-primary hover:text-blue-800 font-semibold text-sm">Verify</button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No drivers found</td>
-                </tr>
-                @endforelse
-                </tbody>
+            <tbody class="divide-y divide-gray-100">
+@foreach($drivers as $driver)
+<tr class="hover:bg-gray-50">
+
+<td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">
+            {{ strtoupper(substr($driver->name,0,1)) }}
+        </div>
+        <div>
+            <div class="font-semibold text-dark">{{ $driver->name }}</div>
+            <div class="text-xs text-gray-500">{{ $driver->phone }}</div>
+        </div>
+    </div>
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-600">
+    {{ $driver->Taxis->model ?? '-' }} ({{  $driver->Taxis->matricule ?? '-' }})
+</td>
+
+<td class="px-6 py-4">
+    @if($driver->verified)
+        <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">VERIFIED</span>
+    @else
+        <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">PENDING</span>
+    @endif
+</td>
+
+<td class="px-6 py-4 font-bold text-dark">
+    ⭐ {{ number_format($driver->rating ?? 0,1) }}
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-500">
+    Trips: {{ $driver->trips_count }}
+    <br>
+    Reservations: {{ $driver->total_reservations }}
+</td>
+
+<td class="px-6 py-4 text-green-600 font-bold">
+    {{ number_format($driver->earnings,2) }} MAD
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-500">
+    {{ $driver->created_at->format('M d, Y') }}
+</td>
+
+</tr>
+@endforeach
+</tbody>
+
+
             </table>
         </div>
     </div>

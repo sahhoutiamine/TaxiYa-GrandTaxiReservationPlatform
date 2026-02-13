@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\City;
+use App\Models\Reservation;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\Reservation;
@@ -14,42 +19,53 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        $totalRevenue = Reservation::where('status', 'confirmed')->sum('total_price');
-        $pendingDriversCount = User::where('role', 'cheffeur')->where('verified', 0)->count();
-        $activeRidesCount = Trip::where('departure_date', '>=', Carbon::now())->count();
-        $totalUsersCount = User::count();
-
-        $pendingDrivers = User::where('role', 'cheffeur')->where('verified', 0)->latest()->take(5)->get();
-        $recentReservations = Reservation::with(['user', 'trip.departureCity', 'trip.arrivalCity'])->latest()->take(5)->get();
-
-        return view('admin.dashboard', compact(
-            'totalRevenue', 
-            'pendingDriversCount', 
-            'activeRidesCount', 
-            'totalUsersCount',
-            'pendingDrivers',
-            'recentReservations'
-        ));
+    //
     }
 
 
     public function drivers()
     {
-        $drivers = User::where('role', 'cheffeur')->with('Taxis')->latest()->get();
+        $drivers = User::where('role', 'cheffeur')
+            ->withCount('trips')
+            ->with('Taxis')
+            ->latest()
+            ->get()
+            ->map(function ($driver) {
+
+
+                $tripIds = Trip::where('cheffeur_id', $driver->id)->pluck('id');
+
+
+                $driver->earnings = Reservation::whereIn('trip_id', $tripIds)
+                    ->where('status', 'confirmed')
+                    ->sum('total_price');
+
+                   $driver->total_reservations = Reservation::whereIn('trip_id', $tripIds)
+                    ->where('status', 'confirmed')
+                    ->count();
+
+                return $driver;
+            });
+
         return view('admin.drivers', compact('drivers'));
     }
 
 
     public function travelers()
     {
-        $travelers = User::where('role', 'voyageur')->latest()->get();
-        return view('admin.travelers', compact('travelers'));
+     $travelers = User::where('role', 'voyageur')
+                         ->withCount('voyageurTrips')
+                         ->orderBy('created_at', 'desc')
+                         ->get();
+
+     return view('admin.travelers', compact('travelers'));
     }
+
 
     public function rides()
     {
         $rides = Trip::with(['cheffeur', 'departureCity', 'arrivalCity'])
-            ->withCount(['reservations' => function ($query) {
+            ->withSum(['reservations as booked_seats' => function ($query) {
                 $query->where('status', 'confirmed');
             }])
             ->orderBy('departure_date', 'desc')
@@ -65,26 +81,5 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.reservations', compact('reservations'));
-    }
-
-    public function verifyDriver($id)
-    {
-        $driver = User::findOrFail($id);
-        $driver->update([
-            'verified' => 1,
-            'approved_at' => now(),
-            'approved_by' => auth()->id()
-        ]);
-
-        return back()->with('success', 'Driver verified successfully.');
-    }
-
-    public function rejectDriver($id)
-    {
-        $driver = User::findOrFail($id);
-        // Maybe delete or just keep as unverified? User didn't specify, so I'll just keep it unverified for now or mark as rejected if there was a field.
-        // For now, let's just delete to clear the list if that's what's expected, but usually rejection means something else.
-        // Let's just redirect back for now.
-        return back()->with('info', 'Driver rejection handled.');
     }
 }
