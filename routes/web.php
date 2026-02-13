@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 Route::view('/dashboard', 'admin.dashboard');
 Route::view('/drivers', 'admin.drivers');
 Route::view('/travelers', 'admin.travelers');
-Route::view('/rides', 'admin.rides');
+Route::get('/rides', ['App\Http\Controllers\AdminController', 'rides']);
 
 
 require __DIR__ . '/auth.php';
