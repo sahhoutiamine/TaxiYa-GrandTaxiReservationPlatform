@@ -54,6 +54,9 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         if ($user->isChauffeur()) {
+            if (!$user->verified) {
+                return redirect()->route('driver.pending');
+            }
             return redirect(route('driver.dashboard', absolute: false));
         }
 

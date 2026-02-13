@@ -28,9 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->user()->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
         if ($request->user()->isChauffeur()) {
-            // Check if driver is verified OR approved
-            if (!$request->user()->verified && !$request->user()->approved_at) {
+            if (!$request->user()->verified) {
                 return redirect()->route('driver.pending');
             }
             return redirect()->intended(route('driver.dashboard', absolute: false));

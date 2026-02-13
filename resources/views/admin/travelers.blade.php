@@ -26,18 +26,27 @@
     </div>
     <nav class="flex-1 overflow-y-auto py-6">
         <ul class="space-y-2 px-4">
-            <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
-            <li><a href="drivers.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
-            <li><a href="travelers.html" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Travelers</a></li>
-            <li><a href="rides.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Rides</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
+            <li><a href="{{ route('admin.drivers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
+            <li><a href="{{ route('admin.travelers') }}" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Travelers</a></li>
+            <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Rides</a></li>
         </ul>
     </nav>
+    <div class="p-6 border-t border-gray-800">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="font-medium">Logout</span>
+            </button>
+        </form>
+    </div>
 </aside>
 
 <main class="flex-1 overflow-y-auto">
     <header class="bg-white shadow-sm sticky top-0 z-30 px-8 py-4 flex justify-between items-center">
         <h1 class="text-2xl font-black text-dark">Travelers Directory</h1>
-        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">A</div>
+        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">{{ substr(auth()->user()->name, 0, 1) }}</div>
     </header>
 
     <div class="p-8">
@@ -47,33 +56,25 @@
                 <tr>
                     <th class="px-6 py-4">User</th>
                     <th class="px-6 py-4">Email</th>
-                    <th class="px-6 py-4">Total Rides</th>
-                    <th class="px-6 py-4">Last Active</th>
+                    <th class="px-6 py-4">Phone</th>
+                    <th class="px-6 py-4">Joined</th>
                     <th class="px-6 py-4">Account Status</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
+                @forelse($travelers as $traveler)
                 <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-semibold text-dark">Ahmed Alami</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">ahmed@example.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">12</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">2 hours ago</td>
+                    <td class="px-6 py-4 font-semibold text-dark">{{ $traveler->name }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ $traveler->email }}</td>
+                    <td class="px-6 py-4 text-sm text-dark">{{ $traveler->phone ?? 'N/A' }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ $traveler->created_at->format('M d, Y') }}</td>
                     <td class="px-6 py-4"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span> Active</td>
                 </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-semibold text-dark">Sarah Benjelloun</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">sarah.b@example.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">5</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Yesterday</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span> Active</td>
+                @empty
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No travelers found</td>
                 </tr>
-                <tr class="hover:bg-gray-50 bg-red-50/50">
-                    <td class="px-6 py-4 font-semibold text-dark">Spam Account</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">spam@fake.com</td>
-                    <td class="px-6 py-4 text-sm text-dark">0</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Jan 01, 2026</td>
-                    <td class="px-6 py-4"><span class="w-2 h-2 bg-red-500 rounded-full inline-block mr-2"></span> Suspended</td>
-                </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>

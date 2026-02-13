@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\DriverController;
@@ -40,10 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });
 
-Route::view('/dashboard', 'admin.dashboard');
-Route::view('/drivers', 'admin.drivers');
-Route::view('/travelers', 'admin.travelers');
-Route::get('/rides', ['App\Http\Controllers\AdminController', 'rides']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/drivers', [AdminController::class, 'drivers'])->name('admin.drivers');
+    Route::get('/admin/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
+    Route::get('/admin/rides', [AdminController::class, 'rides'])->name('admin.rides');
+    Route::post('/admin/drivers/{id}/verify', [AdminController::class, 'verifyDriver'])->name('admin.drivers.verify');
+    Route::post('/admin/drivers/{id}/reject', [AdminController::class, 'rejectDriver'])->name('admin.drivers.reject');
+});
 
 
 require __DIR__ . '/auth.php';

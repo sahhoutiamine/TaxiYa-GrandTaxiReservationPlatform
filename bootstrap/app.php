@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(function () {
             if (auth()->check()) {
                 if (auth()->user()->isChauffeur()) {
+                    if (!auth()->user()->verified) {
+                        return route('driver.pending');
+                    }
                     return route('driver.dashboard');
                 }
                 return route('dashboard');
