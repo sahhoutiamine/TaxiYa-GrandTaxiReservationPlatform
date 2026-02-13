@@ -49,3 +49,5 @@ Route::view('/travelers', 'admin.travelers');
 Route::view('/rides', 'admin.rides');
 
 
+
+
