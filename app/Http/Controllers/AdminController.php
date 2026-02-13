@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Trip;
-use App\Models\Reservation;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+
     public function dashboard()
     {
-        return view('admin.dashboard');
+
     }
+
 
     public function drivers()
     {
@@ -41,13 +41,21 @@ class AdminController extends Controller
         return view('admin.drivers', compact('drivers'));
     }
 
+
     public function travelers()
     {
-        // return view('admin.travelers');
+
     }
 
     public function rides()
     {
-        // return view('admin.rides');
+        $rides = Trip::with(['cheffeur', 'departureCity', 'arrivalCity'])
+            ->withSum(['reservations' => function ($query) {
+                $query->where('status', 'confirmed');
+            }], 'seat')
+            ->orderBy('departure_date', 'desc')
+            ->get();
+
+        return view('admin.rides', compact('rides'));
     }
 }
