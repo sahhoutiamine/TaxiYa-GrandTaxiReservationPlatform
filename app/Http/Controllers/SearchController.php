@@ -40,7 +40,7 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $cities = City::all();
-        $query = Trip::query();
+        $query = Trip::query()->where('status', '!=', 'canceled');
 
         // Basic Search Filters
         if ($request->filled('from')) {

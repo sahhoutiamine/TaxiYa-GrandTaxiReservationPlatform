@@ -90,4 +90,28 @@ public function Taxis()
     {
         return $this->role === 'voyageur';
     }
+
+    /**
+     * Get the average rating for a driver.
+     */
+    public function getAverageRatingAttribute()
+    {
+        if (!$this->isChauffeur()) return 0;
+
+        return Reservation::whereHas('trip', function ($query) {
+            $query->where('cheffeur_id', $this->id);
+        })->whereNotNull('rate')->avg('rate') ?: 0;
+    }
+
+    /**
+     * Get the total count of ratings for a driver.
+     */
+    public function getRatingsCountAttribute()
+    {
+        if (!$this->isChauffeur()) return 0;
+
+        return Reservation::whereHas('trip', function ($query) {
+            $query->where('cheffeur_id', $this->id);
+        })->whereNotNull('rate')->count();
+    }
 }

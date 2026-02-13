@@ -69,4 +69,18 @@ class RideController extends Controller
 
         return redirect()->route('driver.dashboard')->with('success', 'Your ride has been published successfully!');
     }
+
+    /**
+     * Cancel a ride.
+     */
+    public function cancel($id)
+    {
+        $trip = Trip::where('id', $id)
+                    ->where('cheffeur_id', Auth::id())
+                    ->firstOrFail();
+
+        $trip->update(['status' => 'canceled']);
+
+        return redirect()->route('driver.dashboard')->with('success', 'Your ride has been canceled.');
+    }
 }

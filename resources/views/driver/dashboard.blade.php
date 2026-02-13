@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         tailwind.config = {
@@ -81,6 +82,25 @@
     <!-- Stats Cards -->
     <section class="py-8 bg-gradient-to-br from-primary to-blue-700">
         <div class="max-w-7xl mx-auto px-6">
+            @if(session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "{{ session('success') }}",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: '#ffffff',
+                        iconColor: '#10B981',
+                        customClass: {
+                            popup: 'rounded-2xl shadow-2xl border-none',
+                            title: 'font-display font-bold text-dark',
+                            htmlContainer: 'font-body text-gray-600'
+                        }
+                    });
+                </script>
+            @endif
             <div class="grid md:grid-cols-4 gap-6">
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
                     <div class="flex items-center justify-between mb-2">
@@ -122,6 +142,7 @@
                         </svg>
                     </div>
                     <div class="text-4xl font-black">{{ $formattedRating }}<span class="text-xl text-blue-200">/5</span></div>
+                    <div class="text-xs text-blue-200 mt-1 font-medium">From {{ $ratingsCount }} reviews</div>
                 </div>
             </div>
         </div>
@@ -146,12 +167,14 @@
             @forelse($trips as $trip)
                 <div class="bg-white rounded-2xl p-6 shadow-lg {{ $trip->departure_date->isToday() ? 'border-2 border-primary' : '' }}">
                     <div class="flex items-center gap-2 mb-4">
-                        @if($trip->departure_date->isToday())
-                            <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full">ACTIVE TODAY</span>
+                        @if($trip->status === 'canceled')
+                            <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full uppercase tracking-wider">Canceled</span>
+                        @elseif($trip->departure_date->isToday())
+                            <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-bold rounded-full uppercase tracking-wider">Active Today</span>
                         @else
-                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">UPCOMING</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full uppercase tracking-wider">Upcoming</span>
                         @endif
-                        <span class="text-sm text-gray-500">Ride #{{ $trip->id }}</span>
+                        <span class="text-sm text-gray-400 font-medium">Ride #{{ $trip->id }}</span>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-6">
@@ -209,12 +232,23 @@
                             </div>
 
                             <div class="flex gap-2">
-                                <button class="flex-1 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition-all text-sm">
-                                    View Passengers
-                                </button>
-                                <button class="px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-primary transition-all text-sm">
-                                    Edit
-                                </button>
+                                @if($trip->status !== 'canceled')
+                                    <form id="cancel-form-{{ $trip->id }}" action="{{ route('rides.cancel', $trip->id) }}" method="POST" class="w-full m-0">
+                                        @csrf
+                                        <button type="button" 
+                                                onclick="confirmCancel({{ $trip->id }})"
+                                                class="w-full px-4 py-2 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-all text-sm flex items-center justify-center gap-2 border-2 border-transparent hover:border-red-200">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            CANCEL RIDE
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="w-full px-4 py-2 bg-gray-50 text-gray-400 font-bold rounded-xl text-sm text-center border-2 border-dashed border-gray-200">
+                                        RIDE CANCELED
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -247,5 +281,32 @@
             <p class="text-gray-400">&copy; 2026 TaxiYa. All rights reserved.</p>
         </div>
     </footer>
+    <script>
+        function confirmCancel(tripId) {
+            Swal.fire({
+                title: 'Cancel this ride?',
+                text: "This action will notify all passengers and cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1E40AF',
+                cancelButtonColor: '#EF4444',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it',
+                reverseButtons: true,
+                background: '#ffffff',
+                customClass: {
+                    popup: 'rounded-2xl shadow-2xl border-none',
+                    title: 'font-display font-bold text-dark',
+                    htmlContainer: 'font-body text-gray-600',
+                    confirmButton: 'px-6 py-2.5 rounded-xl font-bold',
+                    cancelButton: 'px-6 py-2.5 rounded-xl font-bold'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('cancel-form-' + tripId).submit();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
