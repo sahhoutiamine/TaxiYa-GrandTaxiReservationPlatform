@@ -4,7 +4,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\RideController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReserveController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
