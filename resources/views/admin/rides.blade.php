@@ -34,26 +34,27 @@
     </div>
     <nav class="flex-1 overflow-y-auto py-6">
         <ul class="space-y-2 px-4">
-            <li><a href="dashboard.html"
-                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a>
-            </li>
-            <li><a href="drivers.html"
-                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a>
-            </li>
-            <li><a href="travelers.html"
-                   class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a>
-            </li>
-            <li><a href="rides.html"
-                   class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a>
-            </li>
+            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Dashboard</a></li>
+            <li><a href="{{ route('admin.drivers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Drivers</a></li>
+            <li><a href="{{ route('admin.travelers') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Travelers</a></li>
+            <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl transition-colors">Rides</a></li>
         </ul>
     </nav>
+    <div class="p-6 border-t border-gray-800">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="font-medium">Logout</span>
+            </button>
+        </form>
+    </div>
 </aside>
 
 <main class="flex-1 overflow-y-auto">
     <header class="bg-white shadow-sm sticky top-0 z-30 px-8 py-4 flex justify-between items-center">
         <h1 class="text-2xl font-black text-dark">Rides Management</h1>
-        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">A</div>
+        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">{{ substr(auth()->user()->name, 0, 1) }}</div>
     </header>
 
     <div class="p-8">
@@ -106,6 +107,17 @@
                             <span class="px-2 py-1 rounded text-xs font-bold uppercase {{ $statusClasses }}">
                         {{ $ride->status }}
                     </span>
+                        </td>
+
+                        <td class="px-6 py-4 text-right">
+                            <a href="{{ route('admin.reservations', $ride->id) }}"
+                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg transition-all text-xs font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                View
+                            </a>
                         </td>
 
                         <td class="px-6 py-4 text-right">

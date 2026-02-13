@@ -10,6 +10,10 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
+use App\Models\Reservation;
+use Carbon\Carbon;
+
 class AdminController extends Controller
 {
 
@@ -63,7 +67,7 @@ class AdminController extends Controller
         $rides = Trip::with(['cheffeur', 'departureCity', 'arrivalCity'])
             ->withSum(['reservations as booked_seats' => function ($query) {
                 $query->where('status', 'confirmed');
-            }], 'seat')
+            }])
             ->orderBy('departure_date', 'desc')
             ->get();
 

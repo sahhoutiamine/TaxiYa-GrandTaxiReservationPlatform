@@ -32,12 +32,21 @@
             <li><a href="{{ route('admin.rides') }}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors">Rides</a></li>
         </ul>
     </nav>
+    <div class="p-6 border-t border-gray-800">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="font-medium">Logout</span>
+            </button>
+        </form>
+    </div>
 </aside>
 
 <main class="flex-1 overflow-y-auto">
     <header class="bg-white shadow-sm sticky top-0 z-30 px-8 py-4 flex justify-between items-center">
         <h1 class="text-2xl font-black text-dark">Travelers Directory</h1>
-        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">A</div>
+        <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">{{ substr(auth()->user()->name, 0, 1) }}</div>
     </header>
 
     <div class="p-8">
@@ -47,8 +56,8 @@
                 <tr>
                     <th class="px-6 py-4">User</th>
                     <th class="px-6 py-4">Email</th>
-                    <th class="px-6 py-4">Total Rides</th>
-                    <th class="px-6 py-4">Last Active</th>
+                    <th class="px-6 py-4">Phone</th>
+                    <th class="px-6 py-4">Joined</th>
                     <th class="px-6 py-4">Account Status</th>
                 </tr>
                 </thead>
