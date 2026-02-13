@@ -22,7 +22,7 @@ Route::post('/search', function (\Illuminate\Http\Request $request) {
 
 // --- 2. Authenticated Routes (Travelers & General) ---
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
     // Dashboards
 Route::get('/traveler/dashboard', [SearchController::class, 'search'])->middleware(['auth', 'verified'])->name('dashboard');
 
