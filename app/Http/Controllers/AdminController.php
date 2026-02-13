@@ -13,9 +13,10 @@ class AdminController extends Controller
     }
 
    
-    public function drivers()
+ public function drivers()
     {
-       
+        $drivers = User::where('role','driver')->latest()->get();
+        return view('admin.drivers',compact('drivers'));
     }
 
    

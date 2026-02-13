@@ -52,38 +52,46 @@
                     <th class="px-6 py-4">Joined</th>
                 </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">M</div>
-                            <div>
-                                <div class="font-semibold text-dark">Mohamed El Fassi</div>
-                                <div class="text-xs text-gray-500">+212 600-123456</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">Mercedes 240d (White)</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">VERIFIED</span></td>
-                    <td class="px-6 py-4 font-bold text-dark">4.8 ★</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Jan 10, 2026</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold">K</div>
-                            <div>
-                                <div class="font-semibold text-dark">Kamal Bennani</div>
-                                <div class="text-xs text-gray-500">+212 600-987654</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">Dacia Lodgy (Silver)</td>
-                    <td class="px-6 py-4"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">PENDING</span></td>
-                    <td class="px-6 py-4 text-gray-400">-</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">Feb 12, 2026</td>
-                </tr>
-                </tbody>
+               <tbody class="divide-y divide-gray-100">
+@foreach($drivers as $driver)
+<tr class="hover:bg-gray-50">
+
+<td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">
+            {{ strtoupper(substr($driver->name,0,1)) }}
+        </div>
+        <div>
+            <div class="font-semibold text-dark">{{ $driver->name }}</div>
+            <div class="text-xs text-gray-500">{{ $driver->phone }}</div>
+        </div>
+    </div>
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-600">
+    {{ $driver->car_model }} ({{ $driver->car_color }})
+</td>
+
+<td class="px-6 py-4">
+    @if($driver->verified)
+        <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">VERIFIED</span>
+    @else
+        <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">PENDING</span>
+    @endif
+</td>
+
+<td class="px-6 py-4 font-bold text-dark">
+    {{ $driver->rating ?? '-' }}
+</td>
+
+<td class="px-6 py-4 text-sm text-gray-500">
+    {{ $driver->created_at->format('M d, Y') }}
+</td>
+
+</tr>
+@endforeach
+</tbody>
+
             </table>
         </div>
     </div>

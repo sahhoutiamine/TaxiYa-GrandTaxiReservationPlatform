@@ -6,6 +6,7 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\RideController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\ReserveController;
+use App\Http\Controllers\AdminController;
 
 
 Route::get('/', [SearchController::class, 'index'])->name('home');
@@ -39,10 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });
 
-Route::view('/dashboard', 'admin.dashboard');
-Route::view('/drivers', 'admin.drivers');
-Route::view('/travelers', 'admin.travelers');
-Route::view('/rides', 'admin.rides');
 
+    // Route::get('/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
+    // Route::get('/drivers', [AdminController::class,'drivers'])->name('admin.drivers');
+    // Route::get('/travelers', [AdminController::class,'travelers'])->name('admin.travelers');
+    // Route::get('/rides', [AdminController::class,'rides'])->name('admin.rides');
 
 require __DIR__ . '/auth.php';
